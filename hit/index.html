@@ -16,83 +16,8 @@
     <meta name="twitter:title" content="홈인스타그램 타격 기록">
     <meta name="twitter:description" content="Home_Instagram 팀의 연도별 타격 기록을 확인하세요.">
 
+    <link rel="stylesheet" href="../common.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 1400px;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        /* ── 헤더 ── */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #2d3748;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header .team-name {
-            color: #667eea;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-
-        /* ── 네비게이션 ── */
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-link-item {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 16px;
-            background-color: #f7fafc;
-            color: #4a5568;
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        .nav-link-item:hover {
-            background-color: #e2e8f0;
-            color: #2d3748;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-
         /* ── 연도 탭 ── */
         .year-tabs {
             display: flex;
@@ -193,31 +118,6 @@
             font-size: 1.1em;
         }
 
-        /* ── 테이블 래퍼 ── */
-        .table-wrapper {
-            overflow-x: auto;
-            margin-top: 10px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-wrapper::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-
         /* ── 테이블 ── */
         table {
             width: 100%;
@@ -226,7 +126,7 @@
         }
         
         table.table-compact {
-            min-width: 100%; /* 전체 탭 등 컬럼이 적을 때 강제 확장 방지 */
+            min-width: 100%;
         }
 
         thead {
@@ -336,47 +236,8 @@
             font-weight: 800;
         }
 
-        /* GitHub 링크 */
-        .github-link {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            opacity: 0.8;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 1000;
-        }
-
-        .github-link:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .github-link svg {
-            width: 32px;
-            height: 32px;
-            fill: currentColor;
-        }
-
         /* ── 반응형 ── */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                padding: 20px 15px;
-                border-radius: 15px;
-            }
-
-            .header h1 {
-                font-size: 1.5em;
-            }
-
-            .header .team-name {
-                font-size: 1em;
-            }
-
             .year-tab {
                 padding: 8px 18px;
                 font-size: 0.9em;
@@ -394,22 +255,6 @@
             thead th,
             tbody td {
                 padding: 9px 7px;
-            }
-
-            .github-link {
-                color: #4a5568;
-                top: 15px;
-                right: 15px;
-            }
-
-            .nav-links {
-                gap: 8px;
-                margin-top: 15px;
-            }
-
-            .nav-link-item {
-                padding: 6px 10px;
-                font-size: 0.8em;
             }
         }
     </style>

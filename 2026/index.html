@@ -17,75 +17,8 @@
     <meta name="twitter:description" content="Home_Instagram 팀의 2026년 일요리그 전체 경기 일정을 확인하세요.">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="../common.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 1200px;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            margin-top: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-wrapper::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #2d3748;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header .team-name {
-            color: #667eea;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-
         .game-summary {
             margin-top: 10px;
             font-size: 1.1em;
@@ -114,36 +47,6 @@
 
         .download-btn:active {
             transform: translateY(0);
-        }
-
-        .quick-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .quick-link-item {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 16px;
-            background-color: #f7fafc;
-            color: #4a5568;
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        .quick-link-item:hover {
-            background-color: #e2e8f0;
-            color: #2d3748;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
         table {
@@ -254,23 +157,6 @@
         }
 
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                padding: 20px 15px;
-                border-radius: 15px;
-            }
-
-            .header h1 {
-                font-size: 1.5em;
-            }
-
-            .header .team-name {
-                font-size: 1em;
-            }
-
             .game-summary {
                 font-size: 1em;
             }
@@ -278,16 +164,6 @@
             .download-btn {
                 padding: 10px 20px;
                 font-size: 0.9em;
-            }
-
-            .quick-links {
-                gap: 8px;
-                margin-top: 15px;
-            }
-
-            .quick-link-item {
-                padding: 6px 10px;
-                font-size: 0.8em;
             }
 
             table {
@@ -307,35 +183,6 @@
             .category {
                 padding: 4px 10px;
                 font-size: 0.8em;
-            }
-        }
-
-        .github-link {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            opacity: 0.8;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 1000;
-        }
-
-        .github-link:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .github-link svg {
-            width: 32px;
-            height: 32px;
-            fill: currentColor;
-        }
-
-        @media (max-width: 768px) {
-            .github-link {
-                color: #4a5568;
-                top: 15px;
-                right: 15px;
             }
         }
     </style>
