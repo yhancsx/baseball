@@ -118,7 +118,12 @@ body {
     fill: currentColor;
 }
 
-@media (max-width: 768px) {
+/* 테이블 공통 정렬 */
+table th, table td {
+    text-align: center;
+}
+
+@media (max-width: 768px) {    
     body {
         padding: 10px;
     }
