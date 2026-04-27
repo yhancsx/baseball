@@ -1,0 +1,42 @@
+name: Scrape Hitter Ranking
+
+on:
+  # 수동 실행
+  workflow_dispatch:
+  # 매주 월요일 오전 9시 (KST = UTC+9 → UTC 00:00)
+  schedule:
+    - cron: "0 0 * * 1"
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # 결과 파일을 repo에 커밋하기 위해 필요
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install playwright
+          # Linux 환경에서 Chromium 시스템 의존성까지 함께 설치
+          playwright install chromium --with-deps
+
+      - name: Run scraper
+        run: python3 scrape_hitter_ranking.py
+
+      - name: Commit and push results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add hit/
+          # 변경사항이 없으면 커밋 건너뜀
+          git diff --cached --quiet || git commit -m "chore: update hitter ranking data [skip ci]"
+          git push
