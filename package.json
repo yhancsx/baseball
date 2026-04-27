@@ -1,0 +1,12 @@
+{
+  "name": "home-instagram-scraper",
+  "version": "1.0.0",
+  "description": "Scraper for gameone.kr hitter ranking",
+  "type": "module",
+  "scripts": {
+    "scrape:hitter": "node scrape_hitter_ranking.js"
+  },
+  "dependencies": {
+    "playwright": "^1.44.0"
+  }
+}

@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Playwright browsers (로컬 설치본, CI에서 별도 설치)
+/playwright-report/
+/test-results/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

@@ -1,0 +1,117 @@
+/**
+ * gameone.kr 타자 랭킹 테이블 스크래퍼 (Node.js / Playwright)
+ * Usage: node scrape_hitter_ranking.js
+ *
+ * 결과물:
+ *   hit/2026_타격.csv
+ *   hit/2026_타격.json
+ */
+
+import { chromium } from "playwright";
+import { writeFileSync, mkdirSync } from "fs";
+import { join } from "path";
+
+// ── 상수 ──────────────────────────────────────────────────────────
+const SEASON = 2026;
+const URL = `https://www.gameone.kr/club/info/ranking/hitter?club_idx=36836&kind=&season=${SEASON}`;
+const OUT_DIR = "hit";
+const CSV_PATH = join(OUT_DIR, "2026_타격.csv");
+const JSON_PATH = join(OUT_DIR, "2026_타격.json");
+
+// ── 유틸 ──────────────────────────────────────────────────────────
+const normalize = (text) => text.replace(/\s+/g, " ").trim();
+
+// ── 스크래핑 ──────────────────────────────────────────────────────
+async function scrape() {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+
+  console.log(`[*] 페이지 로딩 중: ${URL}`);
+  await page.goto(URL, { waitUntil: "networkidle", timeout: 30_000 });
+  await page.waitForTimeout(2000);
+
+  // 데이터가 있는 첫 번째 테이블 선택
+  const tables = await page.$$("table");
+  let targetTable = null;
+
+  for (const table of tables) {
+    const rowCount = await table.$$eval("tbody tr", (rows) => rows.length);
+    if (rowCount > 0) {
+      targetTable = table;
+      break;
+    }
+  }
+
+  if (!targetTable) {
+    console.error("[!] 테이블을 찾을 수 없습니다.");
+    await browser.close();
+    return [];
+  }
+
+  // 헤더 추출 (thead > tr > th)
+  const headers = await targetTable.$$eval("thead tr th", (ths) =>
+    ths.map((th) => th.innerText.replace(/\s+/g, " ").trim())
+  );
+  console.log(`[*] 컬럼 수: ${headers.length}`);
+  console.log(`[*] 헤더: ${headers.join(", ")}`);
+
+  // 데이터 행 추출
+  // tbody의 각 tr 에는 th(순위·이름) + td(통계) 가 혼용됨 → th, td 모두 선택
+  const rows = await targetTable.$$("tbody tr");
+  console.log(`[*] 데이터 행 수: ${rows.length}`);
+
+  const records = [];
+
+  for (const row of rows) {
+    const values = await row.$$eval("th, td", (cells) =>
+      cells.map((c) => c.innerText.replace(/\s+/g, " ").trim())
+    );
+
+    // 헤더 수에 맞게 조정
+    while (values.length < headers.length) values.push("");
+    const sliced = values.slice(0, headers.length);
+
+    const record = Object.fromEntries(headers.map((h, i) => [h, sliced[i]]));
+    records.push(record);
+  }
+
+  await browser.close();
+  return records;
+}
+
+// ── CSV 저장 ──────────────────────────────────────────────────────
+function saveCsv(records, path = CSV_PATH) {
+  if (!records.length) return;
+  mkdirSync(OUT_DIR, { recursive: true });
+
+  const headers = Object.keys(records[0]);
+  const escape = (v) => `"${String(v).replace(/"/g, '""')}"`;
+  const lines = [
+    headers.map(escape).join(","),
+    ...records.map((r) => headers.map((h) => escape(r[h])).join(",")),
+  ];
+
+  // Excel 호환: UTF-8 BOM 추가
+  writeFileSync(path, "\uFEFF" + lines.join("\n"), "utf8");
+  console.log(`[✓] CSV 저장 완료: ${path}  (${records.length}행)`);
+}
+
+// ── JSON 저장 ─────────────────────────────────────────────────────
+function saveJson(records, path = JSON_PATH) {
+  mkdirSync(OUT_DIR, { recursive: true });
+  writeFileSync(path, JSON.stringify(records, null, 2), "utf8");
+  console.log(`[✓] JSON 저장 완료: ${path}  (${records.length}행)`);
+}
+
+// ── 메인 ─────────────────────────────────────────────────────────
+const data = await scrape();
+
+if (data.length) {
+  saveCsv(data);
+  saveJson(data);
+  console.log("\n[샘플 데이터 (첫 3행)]");
+  data.slice(0, 3).forEach((row) => console.log(JSON.stringify(row)));
+} else {
+  console.error("[!] 추출된 데이터가 없습니다.");
+  process.exit(1);
+}

@@ -3,9 +3,9 @@ name: Scrape Hitter Ranking
 on:
   # 수동 실행
   workflow_dispatch:
-  # 매주 월요일 오전 9시 (KST = UTC+9 → UTC 00:00)
+  # 매주 일요일 저녁 8시 KST (KST = UTC+9 → UTC 11:00)
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: "0 11 * * 0"
 
 jobs:
   scrape:
@@ -18,19 +18,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: "3.11"
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
-        run: |
-          pip install playwright
-          # Linux 환경에서 Chromium 시스템 의존성까지 함께 설치
-          playwright install chromium --with-deps
+        run: npm ci
+
+      - name: Install Playwright Chromium (with system deps)
+        run: npx playwright install chromium --with-deps
 
       - name: Run scraper
-        run: python3 scrape_hitter_ranking.py
+        run: npm run scrape:hitter
 
       - name: Commit and push results
         run: |
