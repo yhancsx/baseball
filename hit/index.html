@@ -335,6 +335,9 @@
 
         const PRIMARY_KEYS = new Set(PRIMARY_COLUMNS.map(c => c.key));
 
+        // ── 3개년 병합 및 정렬 기준 ──
+        const SUM_KEYS = ['게임수', '타석', '타수', '득점', '총안타', '1루타', '2루타', '3루타', '홈런', '루타', '타점', '도루', '도실 (도루자)', '희타', '희비', '볼넷', '고의 4구', '사구', '삼진', '병살', '멀티 히트'];
+
         // 정렬 상태
         let sortKey = '타율';
         let sortAsc = false; // 기본: 타율 내림차순
@@ -523,6 +526,14 @@
             const allKeys = Object.keys(data[0]);
             const remainingColumns = allKeys
                 .filter(k => !PRIMARY_KEYS.has(k) && !HIDDEN_KEYS.has(k))
+                .sort((a, b) => {
+                    const idxA = SUM_KEYS.indexOf(a);
+                    const idxB = SUM_KEYS.indexOf(b);
+                    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                    if (idxA !== -1) return -1;
+                    if (idxB !== -1) return 1;
+                    return a.localeCompare(b);
+                })
                 .map(k => ({ key: k, label: k }));
 
             currentColumns = [...PRIMARY_COLUMNS, ...remainingColumns];
@@ -674,10 +685,6 @@
         }
 
         // ── 3개년 병합 로직 ──
-        const SUM_KEYS = ['게임수','타석','타수','총안타','1루타','2루타','3루타',
-                          '홈런','루타','득점','타점','볼넷','사구','삼진',
-                          '도루','희타','희비','병살','멀티 히트', '고의 4구', '도실 (도루자)'];
-
         function mergeAllYears(datasets) {
             const map = new Map();
             for (const data of datasets) {
