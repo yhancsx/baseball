@@ -3,5 +3,5 @@
 const CONFIG = {
     // 여기에 Google AI Studio에서 발급받은 Gemini API Key를 입력하세요.
     // 예시: "AIzaSyB-..."
-    GEMINI_API_KEY: "AIzaSyATcGCg6sBCIAGG86sKCpdN9jfdG4rZV_g"
+    GEMINI_API_KEY: "___GEMINI_API_KEY___"
 };
