@@ -520,12 +520,6 @@
                 return;
             }
 
-            if (currentYear === 'all') {
-                const allowedKeys = new Set(['이름', '타율', '장타율', '출루율', 'OPS', '삼진율', 'wRC+']);
-                currentColumns = PRIMARY_COLUMNS.filter(c => allowedKeys.has(c.key));
-                return;
-            }
-
             const allKeys = Object.keys(data[0]);
             const remainingColumns = allKeys
                 .filter(k => !PRIMARY_KEYS.has(k) && !HIDDEN_KEYS.has(k))
@@ -711,6 +705,8 @@
         function recalcRates(p) {
             const ab = p['타수'], h = p['총안타'], tb = p['루타'];
             const bb = p['볼넷'], hbp = p['사구'], sf = p['희비'];
+            const k = p['삼진'];
+            const h2 = p['2루타'], h3 = p['3루타'], hr = p['홈런'];
 
             const avg = ab > 0 ? (h / ab) : 0;
             const slg = ab > 0 ? (tb / ab) : 0;
@@ -719,12 +715,17 @@
                 : 0;
             const ops = slg + obp;
 
+            const bb_k = k > 0 ? (bb / k).toFixed(2) : (bb > 0 ? bb.toFixed(2) : "0.00");
+            const xbh_h = h > 0 ? ((h2 + h3 + hr) / h).toFixed(3) : "0.000";
+
             return {
                 ...p,
                 '타율': avg.toFixed(3),
                 '장타율': slg.toFixed(3),
                 '출루율': obp.toFixed(3),
-                'OPS': ops.toFixed(3)
+                'OPS': ops.toFixed(3),
+                'BB/K': bb_k,
+                '장타/안타': xbh_h
             };
         }
 
