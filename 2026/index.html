@@ -220,7 +220,7 @@
             <div id="game-summary" class="game-summary"></div>
             <button class="download-btn" onclick="downloadImage()">📥 이미지로 다운로드</button>
             <div class="quick-links">
-                <a href="../hit/index.html" target="hit" class="quick-link-item" title="타격 기록">📊 타격 기록</a>
+                <a href="../hit/" target="hit" class="quick-link-item" title="타격 기록">📊 타격 기록</a>
                 <a href="https://www.youtube.com/@home_instagram3632" target="_blank" class="quick-link-item" title="유튜브">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="#ff0000" style="margin-right: 5px;">
                         <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/>
@@ -285,7 +285,7 @@
                     <td>${game.id}</td>
                     <td class="date">${game.date}</td>
                     <td><span class="category ${categoryClass}">${game.category}</span></td>
-                    <td class="result ${resultClass}">${game.result ? game.result : '<a href="../lineup/index.html" class="lineup-btn">🤖 라인업</a>'}</td>
+                    <td class="result ${resultClass}">${game.result ? game.result : '<a href="../lineup/" target="lineup" class="lineup-btn">🤖 라인업</a>'}</td>
                     <td class="match">${game.match.replace(/Home_Instagram/g, '<span class="home-team">Home_Instagram</span>')}</td>
                 `;
                 scheduleBody.appendChild(row);
