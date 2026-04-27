@@ -312,6 +312,12 @@
             color: #667eea;
         }
 
+        /* 각 컬럼 1위(최대값) 강조 */
+        tbody td.td-max {
+            color: #e53e3e !important;
+            font-weight: 800;
+        }
+
         /* GitHub 링크 */
         .github-link {
             position: absolute;
@@ -629,6 +635,28 @@
             // 타율 강조 컬럼 키 셋
             const rateKeys = new Set(['타율', '장타율', '출루율', 'OPS', '삼진율']);
 
+            // 각 컬럼별 최대값 찾기 (이름 컬럼 제외)
+            const maxValues = {};
+            currentColumns.forEach(col => {
+                if (col.key === '이름') return;
+
+                let max = -Infinity;
+                sorted.forEach(player => {
+                    let numVal;
+                    if (col.computed && col.key === '삼진율') {
+                        const k = parseFloat(player['삼진']);
+                        const pa = parseFloat(player['타석']);
+                        numVal = (!isNaN(k) && !isNaN(pa) && pa > 0) ? parseFloat((k / pa).toFixed(3)) : -Infinity;
+                    } else {
+                        numVal = parseFloat(player[col.key]);
+                    }
+                    if (!isNaN(numVal) && numVal > max) {
+                        max = numVal;
+                    }
+                });
+                maxValues[col.key] = max;
+            });
+
             sorted.forEach((player) => {
                 const tr = document.createElement('tr');
 
@@ -637,14 +665,19 @@
 
                     // computed 컬럼 처리
                     let val;
+                    let numVal;
                     if (col.computed && col.key === '삼진율') {
                         const k = parseFloat(player['삼진']);
                         const pa = parseFloat(player['타석']);
-                        val = (!isNaN(k) && !isNaN(pa) && pa > 0)
-                            ? (k / pa).toFixed(3)
-                            : '-';
+                        if (!isNaN(k) && !isNaN(pa) && pa > 0) {
+                            val = (k / pa).toFixed(3);
+                            numVal = parseFloat(val);
+                        } else {
+                            val = '-';
+                        }
                     } else {
                         val = player[col.key] !== undefined ? player[col.key] : '-';
+                        numVal = parseFloat(val);
                     }
 
                     if (col.key === '이름') {
@@ -652,6 +685,11 @@
                         td.classList.add('col-sticky');
                     } else if (rateKeys.has(col.key)) {
                         td.classList.add('td-rate');
+                    }
+
+                    // 최대값(1위) 강조 (단, 0보다 큰 경우만)
+                    if (col.key !== '이름' && !isNaN(numVal) && numVal === maxValues[col.key] && maxValues[col.key] > 0) {
+                        td.classList.add('td-max');
                     }
 
                     // 이름 컬럼: 괄호+번호 제거 (예: '박현규(49)' → '박현규')
