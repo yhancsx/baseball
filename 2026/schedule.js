@@ -46,7 +46,7 @@ const scheduleData = [
         "date": "04월26일(일) 13:00",
         "category": "일요리그C1",
         "match": "여우야(FENNEC FOX) vs Home_Instagram",
-        "result": null
+        "result": "패"
     },
     {
         "id": 8,
