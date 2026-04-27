@@ -4,7 +4,10 @@
   "description": "Scraper for gameone.kr hitter ranking",
   "type": "module",
   "scripts": {
-    "scrape:hitter": "node scrape_hitter_ranking.js"
+    "scrape:hitter": "node scrape_hitter_ranking.js",
+    "scrape:hitter:2024": "node scrape_hitter_ranking.js 2024",
+    "scrape:hitter:2025": "node scrape_hitter_ranking.js 2025",
+    "scrape:hitter:2026": "node scrape_hitter_ranking.js 2026"
   },
   "dependencies": {
     "playwright": "^1.44.0"
