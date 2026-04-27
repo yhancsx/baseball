@@ -362,6 +362,7 @@
 
         <!-- 연도 탭 -->
         <div class="year-tabs">
+            <button class="year-tab" id="tab-all" onclick="loadYear('all')">전체</button>
             <button class="year-tab" id="tab-2024" onclick="loadYear(2024)">2024</button>
             <button class="year-tab" id="tab-2025" onclick="loadYear(2025)">2025</button>
             <button class="year-tab active" id="tab-2026" onclick="loadYear(2026)">2026</button>
@@ -424,25 +425,44 @@
             document.getElementById('status-message').style.display = 'block';
             document.getElementById('status-message').textContent = '데이터를 불러오는 중...';
 
-            const url = `./${year}_hit.json`;
-
-            fetch(url)
-                .then(res => {
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    return res.json();
-                })
-                .then(data => {
-                    currentData = data;
-                    buildColumns(data);
+            if (year === 'all') {
+                Promise.all([
+                    fetch('./2024_hit.json').then(r => r.ok ? r.json() : []),
+                    fetch('./2025_hit.json').then(r => r.ok ? r.json() : []),
+                    fetch('./2026_hit.json').then(r => r.ok ? r.json() : [])
+                ])
+                .then(datasets => {
+                    currentData = mergeAllYears(datasets);
+                    buildColumns(currentData);
                     renderTable();
                     document.getElementById('status-message').style.display = 'none';
                     document.getElementById('table-wrapper').style.display = 'block';
                 })
                 .catch(err => {
                     console.error(err);
-                    document.getElementById('status-message').textContent =
-                        '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+                    document.getElementById('status-message').textContent = '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
                 });
+            } else {
+                const url = `./${year}_hit.json`;
+
+                fetch(url)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        return res.json();
+                    })
+                    .then(data => {
+                        currentData = data;
+                        buildColumns(data);
+                        renderTable();
+                        document.getElementById('status-message').style.display = 'none';
+                        document.getElementById('table-wrapper').style.display = 'block';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('status-message').textContent =
+                            '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+                    });
+            }
         }
 
         // ── 컬럼 목록 구성 (primary + 나머지) ──
@@ -451,6 +471,13 @@
                 currentColumns = PRIMARY_COLUMNS;
                 return;
             }
+
+            if (currentYear === 'all') {
+                const allowedKeys = new Set(['이름', '타율', '장타율', '출루율', 'OPS', '삼진율']);
+                currentColumns = PRIMARY_COLUMNS.filter(c => allowedKeys.has(c.key));
+                return;
+            }
+
             const allKeys = Object.keys(data[0]);
             const remainingColumns = allKeys
                 .filter(k => !PRIMARY_KEYS.has(k) && !HIDDEN_KEYS.has(k))
@@ -564,6 +591,55 @@
                 sortAsc = (key === '이름');
             }
             renderTable();
+        }
+
+        // ── 3개년 병합 로직 ──
+        const SUM_KEYS = ['게임수','타석','타수','총안타','1루타','2루타','3루타',
+                          '홈런','루타','득점','타점','볼넷','사구','삼진',
+                          '도루','희타','희비','병살','멀티 히트'];
+
+        function mergeAllYears(datasets) {
+            const map = new Map();
+            for (const data of datasets) {
+                for (const player of data) {
+                    const name = player['이름'].replace(/\(\d+\)$/, '').trim();
+                    if (!map.has(name)) map.set(name, initBlank(name));
+                    accumulate(map.get(name), player);
+                }
+            }
+            return [...map.values()].map(recalcRates);
+        }
+
+        function initBlank(name) {
+            const obj = { '이름': name };
+            SUM_KEYS.forEach(k => obj[k] = 0);
+            return obj;
+        }
+
+        function accumulate(acc, player) {
+            SUM_KEYS.forEach(k => {
+                acc[k] = (acc[k] || 0) + (parseFloat(player[k]) || 0);
+            });
+        }
+
+        function recalcRates(p) {
+            const ab = p['타수'], h = p['총안타'], tb = p['루타'];
+            const bb = p['볼넷'], hbp = p['사구'], sf = p['희비'];
+
+            const avg = ab > 0 ? (h / ab) : 0;
+            const slg = ab > 0 ? (tb / ab) : 0;
+            const obp = (ab + bb + hbp + sf) > 0
+                ? (h + bb + hbp) / (ab + bb + hbp + sf)
+                : 0;
+            const ops = slg + obp;
+
+            return {
+                ...p,
+                '타율': avg.toFixed(3),
+                '장타율': slg.toFixed(3),
+                '출루율': obp.toFixed(3),
+                'OPS': ops.toFixed(3)
+            };
         }
 
         // ── 초기 로드 (현재 연도 기본: 가장 최신) ──
