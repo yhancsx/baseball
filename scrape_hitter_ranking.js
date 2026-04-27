@@ -3,8 +3,8 @@
  * Usage: node scrape_hitter_ranking.js
  *
  * 결과물:
- *   hit/2026_타격.csv
- *   hit/2026_타격.json
+ *   hit/2026_hit.csv
+ *   hit/2026_hit.json
  */
 
 import { chromium } from "playwright";
@@ -16,8 +16,8 @@ import { join } from "path";
 const SEASON = process.argv[2] ?? 2026;
 const URL = `https://www.gameone.kr/club/info/ranking/hitter?club_idx=36836&kind=&season=${SEASON}`;
 const OUT_DIR = "hit";
-const CSV_PATH = join(OUT_DIR, `${SEASON}_타격.csv`);
-const JSON_PATH = join(OUT_DIR, `${SEASON}_타격.json`);
+const CSV_PATH = join(OUT_DIR, `${SEASON}_hit.csv`);
+const JSON_PATH = join(OUT_DIR, `${SEASON}_hit.json`);
 
 // ── 유틸 ──────────────────────────────────────────────────────────
 const normalize = (text) => text.replace(/\s+/g, " ").trim();

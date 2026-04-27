@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈인스타그램 타격 기록</title>
+    <meta name="description" content="Home_Instagram 팀의 연도별 타격 기록을 확인하세요.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="홈인스타그램 타격 기록">
+    <meta property="og:description" content="Home_Instagram 팀의 연도별 타격 기록을 확인하세요.">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="홈인스타그램 타격 기록">
+    <meta name="twitter:description" content="Home_Instagram 팀의 연도별 타격 기록을 확인하세요.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 1400px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* ── 헤더 ── */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .team-name {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        /* ── 네비게이션 ── */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f7fafc;
+            color: #4a5568;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-link-item:hover {
+            background-color: #e2e8f0;
+            color: #2d3748;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* ── 연도 탭 ── */
+        .year-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .year-tab {
+            padding: 10px 28px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            background: transparent;
+            color: #667eea;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .year-tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .year-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ── 로딩 / 에러 ── */
+        .status-message {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        /* ── 테이블 래퍼 ── */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        /* ── 테이블 ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        thead th {
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.88em;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+            position: relative;
+        }
+
+        thead th:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        thead th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        thead th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .sort-icon {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 0.75em;
+            opacity: 0.5;
+        }
+
+        thead th.sort-asc .sort-icon,
+        thead th.sort-desc .sort-icon {
+            opacity: 1;
+        }
+
+        /* 주요 컬럼 강조 (앞쪽 고정 컬럼) */
+        thead th.col-primary {
+            background: rgba(255,255,255,0.08);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f0f4ff;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody td {
+            padding: 13px 12px;
+            color: #4a5568;
+            text-align: center;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        /* 이름 컬럼 왼쪽 정렬 */
+        tbody td.td-name {
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 90px;
+        }
+
+        /* 타율/장타율/출루율/OPS 강조 */
+        tbody td.td-rate {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* GitHub 링크 */
+        .github-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .github-link:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .github-link svg {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+        }
+
+        /* ── 반응형 ── */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .header .team-name {
+                font-size: 1em;
+            }
+
+            .year-tab {
+                padding: 8px 18px;
+                font-size: 0.9em;
+            }
+
+            table {
+                font-size: 0.78em;
+                min-width: 800px;
+            }
+
+            thead th,
+            tbody td {
+                padding: 9px 7px;
+            }
+
+            .github-link {
+                color: #4a5568;
+                top: 15px;
+                right: 15px;
+            }
+
+            .nav-links {
+                gap: 8px;
+                margin-top: 15px;
+            }
+
+            .nav-link-item {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="https://github.com/yhancsx/home_instagram" target="_blank" class="github-link" title="GitHub 저장소 보기">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏏 타격 기록</h1>
+            <div class="team-name">Home_Instagram</div>
+            <div class="nav-links">
+                <a href="../2026/index.html" class="nav-link-item" title="2026 경기 일정">📅 경기 일정</a>
+                <a href="https://www.youtube.com/@home_instagram3632" target="_blank" class="nav-link-item" title="유튜브">📺 유튜브</a>
+                <a href="https://docs.google.com/spreadsheets/d/1Ta98xHQX98tD81bM2zFmvJWSyVTOUnvlHBONLWPutFU/edit?gid=1306478431#gid=1306478431" target="_blank" class="nav-link-item" title="출석표 및 회칙">📋 출석표/회칙</a>
+                <a href="http://naver.me/GI34QTjW" target="_blank" class="nav-link-item" title="사진 모음">📸 사진 모음</a>
+            </div>
+        </div>
+
+        <!-- 연도 탭 -->
+        <div class="year-tabs">
+            <button class="year-tab" id="tab-2024" onclick="loadYear(2024)">2024</button>
+            <button class="year-tab" id="tab-2025" onclick="loadYear(2025)">2025</button>
+            <button class="year-tab active" id="tab-2026" onclick="loadYear(2026)">2026</button>
+        </div>
+
+        <!-- 테이블 -->
+        <div id="status-message" class="status-message">데이터를 불러오는 중...</div>
+        <div class="table-wrapper" id="table-wrapper" style="display:none;">
+            <table id="hit-table">
+                <thead>
+                    <tr id="table-header"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // ── 컬럼 정의 ──
+        // 앞쪽 고정 우선순위 컬럼, 이후 나머지는 JSON 원순서로 동적 추가
+        // computed: true 인 컬럼은 JSON 원본 키가 없고 JS에서 계산
+        const PRIMARY_COLUMNS = [
+            { key: '이름',    label: '이름' },
+            { key: '타율',    label: '타율' },
+            { key: '장타율',  label: '장타율' },
+            { key: '출루율',  label: '출루율' },
+            { key: 'OPS',     label: 'OPS' },
+            { key: '타석',    label: '타석' },
+            { key: '타수',    label: '타수' },
+            { key: '총안타',  label: '총안타' },
+            { key: '볼넷',    label: '볼넷' },
+            { key: 'BB/K',    label: 'BB/K' },
+            { key: '삼진율',  label: '삼진율', computed: true },
+        ];
+
+        // 순위 컬럼은 테이블에서 미노출
+        const HIDDEN_KEYS = new Set(['순위', '도실 (도루자)', '고의 4구', '도루 성공률']);
+
+        const PRIMARY_KEYS = new Set(PRIMARY_COLUMNS.map(c => c.key));
+
+        // 정렬 상태
+        let sortKey = '타율';
+        let sortAsc = false; // 기본: 타율 내림차순
+
+        // 현재 데이터 캐시
+        let currentData = [];
+        let currentColumns = [];
+        let currentYear = 2026;
+
+        // ── 연도 로드 ──
+        function loadYear(year) {
+            currentYear = year;
+
+            // 탭 활성화
+            document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + year).classList.add('active');
+
+            // UI 초기화
+            document.getElementById('table-wrapper').style.display = 'none';
+            document.getElementById('status-message').style.display = 'block';
+            document.getElementById('status-message').textContent = '데이터를 불러오는 중...';
+
+            const url = `./${year}_hit.json`;
+
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    currentData = data;
+                    buildColumns(data);
+                    renderTable();
+                    document.getElementById('status-message').style.display = 'none';
+                    document.getElementById('table-wrapper').style.display = 'block';
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('status-message').textContent =
+                        '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+                });
+        }
+
+        // ── 컬럼 목록 구성 (primary + 나머지) ──
+        function buildColumns(data) {
+            if (!data || data.length === 0) {
+                currentColumns = PRIMARY_COLUMNS;
+                return;
+            }
+            const allKeys = Object.keys(data[0]);
+            const remainingColumns = allKeys
+                .filter(k => !PRIMARY_KEYS.has(k) && !HIDDEN_KEYS.has(k))
+                .map(k => ({ key: k, label: k }));
+
+            currentColumns = [...PRIMARY_COLUMNS, ...remainingColumns];
+        }
+
+        // ── 테이블 렌더링 ──
+        function renderTable() {
+            renderHeader();
+            renderBody();
+        }
+
+        function renderHeader() {
+            const headerRow = document.getElementById('table-header');
+            headerRow.innerHTML = '';
+
+            currentColumns.forEach((col, idx) => {
+                const th = document.createElement('th');
+                const isPrimary = idx < PRIMARY_COLUMNS.length;
+
+                if (isPrimary) th.classList.add('col-primary');
+
+                // 정렬 상태 클래스
+                if (col.key === sortKey) {
+                    th.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+                }
+
+                const iconChar = col.key === sortKey ? (sortAsc ? '▲' : '▼') : '⇅';
+                th.innerHTML = `${col.label}<span class="sort-icon">${iconChar}</span>`;
+                th.dataset.key = col.key;
+                th.addEventListener('click', () => onHeaderClick(col.key));
+                headerRow.appendChild(th);
+            });
+        }
+
+        function renderBody() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const sorted = [...currentData].sort((a, b) => {
+                // computed 컬럼(삼진율)은 직접 계산
+                const getVal = (player, key) => {
+                    if (key === '삼진율') {
+                        const k = parseFloat(player['삼진']);
+                        const pa = parseFloat(player['타석']);
+                        return (!isNaN(k) && !isNaN(pa) && pa > 0) ? k / pa : -Infinity;
+                    }
+                    return player[key];
+                };
+                const va = getVal(a, sortKey);
+                const vb = getVal(b, sortKey);
+                const na = parseFloat(va);
+                const nb = parseFloat(vb);
+                let cmp;
+                if (!isNaN(na) && !isNaN(nb)) {
+                    cmp = na - nb;
+                } else {
+                    cmp = String(va).localeCompare(String(vb), 'ko');
+                }
+                return sortAsc ? cmp : -cmp;
+            });
+
+            // 타율 강조 컬럼 키 셋
+            const rateKeys = new Set(['타율', '장타율', '출루율', 'OPS']);
+
+            sorted.forEach((player) => {
+                const tr = document.createElement('tr');
+
+                currentColumns.forEach((col) => {
+                    const td = document.createElement('td');
+
+                    // computed 컬럼 처리
+                    let val;
+                    if (col.computed && col.key === '삼진율') {
+                        const k = parseFloat(player['삼진']);
+                        const pa = parseFloat(player['타석']);
+                        val = (!isNaN(k) && !isNaN(pa) && pa > 0)
+                            ? (k / pa).toFixed(3)
+                            : '-';
+                    } else {
+                        val = player[col.key] !== undefined ? player[col.key] : '-';
+                    }
+
+                    if (col.key === '이름') {
+                        td.classList.add('td-name');
+                    } else if (rateKeys.has(col.key)) {
+                        td.classList.add('td-rate');
+                    }
+
+                    // 이름 컬럼: 괄호+번호 제거 (예: '박현규(49)' → '박현규')
+                    if (col.key === '이름') val = String(val).replace(/\(\d+\)$/, '').trim();
+                    td.textContent = val;
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ── 헤더 클릭 정렬 ──
+        function onHeaderClick(key) {
+            if (sortKey === key) {
+                sortAsc = !sortAsc;
+            } else {
+                sortKey = key;
+                // 이름 컬럼은 기본 오름차순, 나머지는 내림차순
+                sortAsc = (key === '이름');
+            }
+            renderTable();
+        }
+
+        // ── 초기 로드 (현재 연도 기본: 가장 최신) ──
+        document.addEventListener('DOMContentLoaded', () => {
+            loadYear(2026);
+        });
+    </script>
+</body>
+</html>
