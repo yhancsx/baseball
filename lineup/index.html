@@ -157,7 +157,7 @@
             <h1>🤖 AI 라인업 추천</h1>
             <div class="team-name">Home_Instagram</div>
             <div class="nav-links">
-                <a href="./index.html" class="nav-link-item" title="타격 기록으로 돌아가기">◀ 타격 기록</a>
+                <a href="../hit/index.html" class="nav-link-item" title="타격 기록으로 돌아가기">◀ 타격 기록</a>
                 <a href="../2026/index.html" target="2026" class="nav-link-item" title="2026 경기 일정">📅 경기 일정</a>
             </div>
         </div>
@@ -302,9 +302,9 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             Promise.all([
-                fetch('./2024_hit.json').then(r => r.ok ? r.json() : []),
-                fetch('./2025_hit.json').then(r => r.ok ? r.json() : []),
-                fetch('./2026_hit.json').then(r => r.ok ? r.json() : [])
+                fetch('../hit/2024_hit.json').then(r => r.ok ? r.json() : []),
+                fetch('../hit/2025_hit.json').then(r => r.ok ? r.json() : []),
+                fetch('../hit/2026_hit.json').then(r => r.ok ? r.json() : [])
             ]).then(([data2024, data2025, data2026]) => {
                 const mergedData = mergeAllYears([data2024, data2025, data2026]);
                 computeAdvancedStats(mergedData);
