@@ -126,6 +126,51 @@
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
+        /* ── 필터 컨트롤 ── */
+        .filter-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-controls label {
+            color: #4a5568;
+            font-size: 0.95em;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-controls select {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background-color: #f7fafc;
+            color: #4a5568;
+            font-family: inherit;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234a5568%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px top 50%;
+            background-size: 10px auto;
+            padding-right: 32px;
+        }
+        
+        .filter-controls select:hover {
+            background-color: #e2e8f0;
+        }
+
+        .filter-controls select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
+        }
+
         /* ── 로딩 / 에러 ── */
         .status-message {
             text-align: center;
@@ -368,6 +413,18 @@
             <button class="year-tab active" id="tab-2026" onclick="loadYear(2026)">2026</button>
         </div>
 
+        <!-- 필터 -->
+        <div class="filter-controls">
+            <label title="총 경기수(팀 내 최다 경기 출장수) × 1 기준">
+                <span>표시 필터:</span>
+                <select id="pa-filter" onchange="renderTable()">
+                    <option value="all">전체보기</option>
+                    <option value="qualified">최소타석 충족선수보기</option>
+                    <option value="unqualified">최소타석 미충족선수보기</option>
+                </select>
+            </label>
+        </div>
+
         <!-- 테이블 -->
         <div id="status-message" class="status-message">데이터를 불러오는 중...</div>
         <div class="table-wrapper" id="table-wrapper" style="display:none;">
@@ -406,6 +463,9 @@
         // 정렬 상태
         let sortKey = '타율';
         let sortAsc = false; // 기본: 타율 내림차순
+
+        // 필터용 최소 타석 배수 (총 경기수 × 배수 = 최소 타석 기준)
+        const MIN_PA_MULTIPLIER = 1;
 
         // 현재 데이터 캐시
         let currentData = [];
@@ -520,7 +580,31 @@
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
 
-            const sorted = [...currentData].sort((a, b) => {
+            const filterValue = document.getElementById('pa-filter').value;
+            let displayData = [...currentData];
+
+            if (filterValue !== 'all') {
+                // 팀의 총 경기수를 가장 많이 출전한 선수의 경기수로 근사치 계산
+                let maxGames = 0;
+                displayData.forEach(p => {
+                    const games = parseInt(p['게임수']) || 0;
+                    if (games > maxGames) maxGames = games;
+                });
+                
+                const requiredPA = maxGames * MIN_PA_MULTIPLIER;
+                
+                displayData = displayData.filter(p => {
+                    const pa = parseFloat(p['타석']) || 0;
+                    if (filterValue === 'qualified') {
+                        return pa >= requiredPA;
+                    } else if (filterValue === 'unqualified') {
+                        return pa < requiredPA;
+                    }
+                    return true;
+                });
+            }
+
+            const sorted = displayData.sort((a, b) => {
                 // computed 컬럼(삼진율)은 직접 계산
                 const getVal = (player, key) => {
                     if (key === '삼진율') {
