@@ -190,14 +190,9 @@
             </div>
 
             <div style="margin-bottom: 25px;">
-                <h3 style="font-size: 1em; color: #4a5568; margin-bottom: 8px;">시스템 프롬프트 (AI 지시사항)</h3>
-                <textarea id="system-prompt" style="width: 100%; box-sizing: border-box; height: 160px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e0; font-family: inherit; resize: vertical;">당신은 세이버메트릭스 기반의 데이터 야구 감독입니다.
-오늘 경기에 참석하는 선수들의 타격 스탯(JSON)은 다음과 같습니다.
-수비 위치는 고려하지 않고 오직 타격 스탯만을 기반으로 최적의 1~9번 타순(선발 라인업)을 구성하세요.
-9명 초과로 참석할 경우, 가장 타격 스탯이 좋은 9명을 선발 라인업으로 구성하고 나머지는 벤치 멤버로 분류해주세요.
-
-제공된 데이터에는 선수의 '3년 누적 스탯'과 '2026년 최신 스탯'이 포함되어 있습니다.
-반드시 **2026년(가장 최근) 스탯에 더 높은 가중치**를 두어 평가하세요.</textarea>
+                <h3 style="font-size: 1em; color: #4a5568; margin-bottom: 8px;">🎯 AI 타순 구성 전략 (수정 가능)</h3>
+                <textarea id="system-prompt" style="width: 100%; box-sizing: border-box; height: 120px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e0; font-family: inherit; resize: vertical;">반드시 **2026년(가장 최근) 스탯에 더 높은 가중치**를 두어 평가하세요.
+수비 위치는 고려하지 않고 오직 타격 스탯만을 기반으로 전략을 수립하세요.</textarea>
             </div>
 
             <button class="btn-primary" onclick="getRecommendation()">최적 라인업 추천받기</button>
@@ -437,19 +432,36 @@
             document.getElementById('recommendation-result').style.display = 'none';
             document.getElementById('recommendation-result').innerHTML = '';
 
-            const systemPrompt = document.getElementById('system-prompt').value;
+            const userInstructions = document.getElementById('system-prompt').value;
+
+            // 1. 페르소나 및 메인 지시사항 (고정)
+            const mainInstruction = `당신은 세이버메트릭스 기반의 데이터 야구 감독입니다.
+오늘 경기에 참석하는 선수들의 타격 스탯을 기반으로 최적의 1~9번 타순(선발 라인업)을 구성하세요.`;
+
+            // 2. 데이터 설명 (고정)
+            const dataContext = `제공되는 선수 데이터(JSON)는 실제 기록을 기반으로 합니다.
+제공된 데이터에는 선수의 '3년 누적 스탯'과 '2026년 최신 스탯'이 포함되어 있습니다.
+9명 초과로 참석할 경우, 가장 타격 스탯이 좋은 9명을 선발 라인업으로 구성하고 나머지는 벤치 멤버로 분류해주세요.`;
+
+            // 3. 출력 형식 가이드 (고정)
+            const outputFormat = `결과는 마크다운 포맷으로 다음 내용을 포함하여 작성해주세요:
+1. 최적의 1~9번 타순 리스트 (이름만 나열하지 말고, 주요 스탯을 함께 표기)
+2. 각 선수를 해당 타순에 배치한 명확한 이유 (누적 데이터, 최근 폼 등 구체적 수치 언급)
+3. (선택사항) 벤치 멤버 명단
+4. 전체 라인업의 핵심 전략 요약`;
 
             const promptText = `
-${systemPrompt}
+${mainInstruction}
 
-참석 선수 데이터:
+[전략 및 추가 지시사항]
+${userInstructions}
+
+${dataContext}
+
+[참석 선수 데이터 (JSON)]
 ${JSON.stringify(promptData, null, 2)}
 
-결과는 마크다운 포맷으로 다음 내용을 포함하여 작성해주세요:
-1. 최적의 1~9번 타순 리스트 (이름만 나열하지 말고, 주요 스탯을 함께 표기)
-2. 각 선수를 해당 타순에 배치한 명확한 이유 (출루율, 장타율, 삼진율, 최근 폼 등 구체적 수치 언급)
-3. (선택사항) 벤치 멤버 명단
-4. 전체 라인업의 핵심 전략 요약
+${outputFormat}
 `;
 
             try {
