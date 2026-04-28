@@ -19,13 +19,6 @@
             margin-bottom: 20px;
         }
 
-        .lineup-panel {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
 
         .panel-title {
             margin-top: 0;
@@ -110,11 +103,8 @@
 
         .result-container {
             margin-top: 30px;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            padding: 0;
+            background: transparent;
             line-height: 1.7;
             color: #2d3748;
             font-size: 1.05em;
@@ -162,7 +152,7 @@
             </div>
         </div>
 
-        <div class="lineup-panel">
+        <div>
             <h2 class="panel-title">👥 참석 인원 선택</h2>
             
             <div class="actions-bar">
@@ -175,6 +165,17 @@
 
             <div id="player-checkboxes" class="player-list-container">
                 <p style="grid-column: 1/-1; text-align: center; color: #718096; padding: 20px;">데이터를 불러오는 중...</p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="font-size: 1em; color: #4a5568; margin-bottom: 8px;">시스템 프롬프트 (AI 지시사항)</h3>
+                <textarea id="system-prompt" style="width: 100%; box-sizing: border-box; height: 160px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e0; font-family: inherit; resize: vertical;">당신은 세이버메트릭스 기반의 데이터 야구 감독입니다.
+오늘 경기에 참석하는 선수들의 타격 스탯(JSON)은 다음과 같습니다.
+수비 위치는 고려하지 않고 오직 타격 스탯만을 기반으로 최적의 1~9번 타순(선발 라인업)을 구성하세요.
+9명 초과로 참석할 경우, 가장 타격 스탯이 좋은 9명을 선발 라인업으로 구성하고 나머지는 벤치 멤버로 분류해주세요.
+
+제공된 데이터에는 선수의 '3년 누적 스탯'과 '2026년 최신 스탯'이 포함되어 있습니다.
+반드시 **2026년(가장 최근) 스탯에 더 높은 가중치**를 두어 평가하세요.</textarea>
             </div>
 
             <button class="btn-primary" onclick="getRecommendation()">최적 라인업 추천받기</button>
@@ -414,14 +415,10 @@
             document.getElementById('recommendation-result').style.display = 'none';
             document.getElementById('recommendation-result').innerHTML = '';
 
-            const promptText = `
-당신은 세이버메트릭스 기반의 데이터 야구 감독입니다.
-오늘 경기에 참석하는 선수들의 타격 스탯(JSON)은 다음과 같습니다.
-수비 위치는 고려하지 않고 오직 타격 스탯만을 기반으로 최적의 1~9번 타순(선발 라인업)을 구성하세요.
-9명 초과로 참석할 경우, 가장 타격 스탯이 좋은 9명을 선발 라인업으로 구성하고 나머지는 벤치 멤버로 분류해주세요.
+            const systemPrompt = document.getElementById('system-prompt').value;
 
-제공된 데이터에는 선수의 '3년 누적 스탯'과 '2026년 최신 스탯'이 포함되어 있습니다.
-반드시 **2026년(가장 최근) 스탯에 더 높은 가중치**를 두어 평가하세요.
+            const promptText = `
+${systemPrompt}
 
 참석 선수 데이터:
 ${JSON.stringify(promptData, null, 2)}
