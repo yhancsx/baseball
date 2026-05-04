@@ -702,10 +702,16 @@
         }
 
         function recalcRates(p) {
-            const ab = p['타수'], h = p['총안타'], tb = p['루타'];
-            const bb = p['볼넷'], hbp = p['사구'], sf = p['희비'];
-            const k = p['삼진'];
-            const h2 = p['2루타'], h3 = p['3루타'], hr = p['홈런'];
+            const ab = parseFloat(p['타수']) || 0;
+            const h = parseFloat(p['총안타']) || 0;
+            const tb = parseFloat(p['루타']) || 0;
+            const bb = parseFloat(p['볼넷']) || 0;
+            const hbp = parseFloat(p['사구']) || 0;
+            const sf = parseFloat(p['희비']) || 0;
+            const k = parseFloat(p['삼진']) || 0;
+            const h2 = parseFloat(p['2루타']) || 0;
+            const h3 = parseFloat(p['3루타']) || 0;
+            const hr = parseFloat(p['홈런']) || 0;
 
             const avg = ab > 0 ? (h / ab) : 0;
             const slg = ab > 0 ? (tb / ab) : 0;

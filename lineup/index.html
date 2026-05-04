@@ -238,9 +238,14 @@
         }
 
         function recalcRates(p) {
-            const ab = p['타수'], h = p['총안타'], tb = p['루타'];
-            const bb = p['볼넷'], hbp = p['사구'], sf = p['희비'];
-            const pa = p['타석'], k = p['삼진'];
+            const ab = parseFloat(p['타수']) || 0;
+            const h = parseFloat(p['총안타']) || 0;
+            const tb = parseFloat(p['루타']) || 0;
+            const bb = parseFloat(p['볼넷']) || 0;
+            const hbp = parseFloat(p['사구']) || 0;
+            const sf = parseFloat(p['희비']) || 0;
+            const pa = parseFloat(p['타석']) || 0;
+            const k = parseFloat(p['삼진']) || 0;
 
             const avg = ab > 0 ? (h / ab) : 0;
             const slg = ab > 0 ? (tb / ab) : 0;
@@ -330,27 +335,22 @@
                 const mergedData = mergeAllYears([data2024, data2025, data2026]);
                 computeAdvancedStats(mergedData);
 
+                // 2026년 데이터도 별도로 advanced stats 계산
+                const processed2026 = data2026.map(p => recalcRates({...p}));
+                computeAdvancedStats(processed2026);
+
                 allPlayersData = mergedData
                     .filter(player => (parseInt(player['게임수']) || 0) >= 3)
                     .map(player => {
                         const name = player['이름'];
-                    const p2026 = data2026.find(p => p['이름'].replace(/\(\d+\)$/, '').trim() === name);
-                    
-                    let stats2026 = null;
-                    if (p2026) {
-                        const p2026Clone = {...p2026};
-                        p2026Clone['이름'] = name;
-                        const arr = [p2026Clone];
-                        computeAdvancedStats(arr);
-                        stats2026 = recalcRates(arr[0]);
-                    }
-
-                    return {
-                        이름: name,
-                        statsTotal: player,
-                        stats2026: stats2026
-                    };
-                });
+                        const p2026 = processed2026.find(p => p['이름'].replace(/\(\d+\)$/, '').trim() === name);
+                        
+                        return {
+                            이름: name,
+                            statsTotal: player,
+                            stats2026: p2026
+                        };
+                    });
                 
                 renderPlayerCheckboxes();
             });
