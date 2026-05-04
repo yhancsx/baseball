@@ -330,8 +330,10 @@
                 const mergedData = mergeAllYears([data2024, data2025, data2026]);
                 computeAdvancedStats(mergedData);
 
-                allPlayersData = mergedData.map(player => {
-                    const name = player['이름'];
+                allPlayersData = mergedData
+                    .filter(player => (parseInt(player['게임수']) || 0) >= 3)
+                    .map(player => {
+                        const name = player['이름'];
                     const p2026 = data2026.find(p => p['이름'].replace(/\(\d+\)$/, '').trim() === name);
                     
                     let stats2026 = null;
