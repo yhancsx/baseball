@@ -53,7 +53,7 @@ const scheduleData = [
         "date": "05월10일(일) 12:30",
         "category": "일요리그C1",
         "match": "야썸 WIZ vs Home_Instagram",
-        "result": null
+        "result": "패"
     },
     {
         "id": 9,
