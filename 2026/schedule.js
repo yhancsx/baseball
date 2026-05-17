@@ -60,7 +60,7 @@ const scheduleData = [
         "date": "05월17일(일) 08:30",
         "category": "일요리그",
         "match": "ART SWING vs Home_Instagram",
-        "result": null
+        "result": "패"
     },
     {
         "id": 10,
