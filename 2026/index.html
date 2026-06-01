@@ -145,17 +145,46 @@
             font-weight: 700;
             text-align: center;
         }
-        
-        .result-win {
-            color: #38a169;
+
+        .result-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .result-lose {
-            color: #e53e3e;
+        .result-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
-        .result-draw {
-            color: #718096;
+        .result-badge.win {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .result-badge.lose {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .result-badge.draw {
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .score-display {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #4a5568;
+            white-space: nowrap;
         }
 
         .lineup-btn {
@@ -272,21 +301,39 @@
 
                 const row = document.createElement('tr');
                 
-                const categoryClass = game.category === '일요리그C1' ? 'category-c1' : 'category-regular';
-                let resultClass = '';
+                const categoryClass = game.category === '일요leagueC1' || game.category === '일요리그C1' ? 'category-c1' : 'category-regular';
+                
+                let resultHTML = '';
                 if (game.result === '승') {
-                    resultClass = 'result-win';
+                    resultHTML = `
+                        <div class="result-cell">
+                            <span class="result-badge win">승</span>
+                            <span class="score-display">${game.score || ''}</span>
+                        </div>
+                    `;
                 } else if (game.result === '패') {
-                    resultClass = 'result-lose';
+                    resultHTML = `
+                        <div class="result-cell">
+                            <span class="result-badge lose">패</span>
+                            <span class="score-display">${game.score || ''}</span>
+                        </div>
+                    `;
                 } else if (game.result === '무') {
-                    resultClass = 'result-draw';
+                    resultHTML = `
+                        <div class="result-cell">
+                            <span class="result-badge draw">무</span>
+                            <span class="score-display">${game.score || ''}</span>
+                        </div>
+                    `;
+                } else {
+                    resultHTML = '<a href="../lineup/" class="lineup-btn">🤖 라인업</a>';
                 }
 
                 row.innerHTML = `
                     <td>${game.id}</td>
                     <td class="date">${game.date}</td>
                     <td><span class="category ${categoryClass}">${game.category}</span></td>
-                    <td class="result ${resultClass}">${game.result ? game.result : '<a href="../lineup/" class="lineup-btn">🤖 라인업</a>'}</td>
+                    <td class="result">${resultHTML}</td>
                     <td class="match">${game.match.replace(/Home_Instagram/g, '<span class="home-team">Home_Instagram</span>')}</td>
                 `;
                 scheduleBody.appendChild(row);

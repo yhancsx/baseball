@@ -4,70 +4,80 @@ const scheduleData = [
         "date": "02월22일(일) 10:00",
         "category": "일요리그C1",
         "match": "해피워리어스 vs Home_Instagram",
-        "result": "승"
+        "result": "승",
+        "score": "10:8"
     },
     {
         "id": 2,
         "date": "03월01일(일) 16:00",
         "category": "일요리그",
         "match": "Home_Instagram vs 루나스틱OB",
-        "result": "패"
+        "result": "패",
+        "score": "9:10"
     },
     {
         "id": 3,
         "date": "03월15일(일) 07:00",
         "category": "일요리그",
         "match": "캐넌즈 vs Home_Instagram",
-        "result": "패"
+        "result": "패",
+        "score": "4:10"
     },
     {
         "id": 4,
         "date": "03월29일(일) 11:00",
         "category": "일요리그C1",
         "match": "로시난테(Rosinante) vs Home_Instagram",
-        "result": "패"
+        "result": "패",
+        "score": "2:14"
     },
     {
         "id": 5,
         "date": "04월05일(일) 09:00",
         "category": "일요리그",
         "match": "로시난테(Rosinante) vs Home_Instagram",
-        "result": "승"
+        "result": "승",
+        "score": "13:6"
     },
     {
         "id": 6,
         "date": "04월19일(일) 15:00",
         "category": "일요리그",
         "match": "Home_Instagram vs 미라클",
-        "result": "패"
+        "result": "패",
+        "score": "10:11"
     },
     {
         "id": 7,
         "date": "04월26일(일) 13:00",
         "category": "일요리그C1",
         "match": "여우야(FENNEC FOX) vs Home_Instagram",
-        "result": "패"
+        "result": "패",
+        "score": "4:9"
     },
     {
         "id": 8,
         "date": "05월10일(일) 12:30",
         "category": "일요리그C1",
         "match": "야썸 WIZ vs Home_Instagram",
-        "result": "패"
+        "result": "패",
+        "score": "11:17"
     },
     {
         "id": 9,
         "date": "05월17일(일) 08:30",
         "category": "일요리그",
         "match": "ART SWING vs Home_Instagram",
-        "result": "패"
+        "result": "패",
+        "score": "4:19"
     },
     {
         "id": 10,
         "date": "05월31일(일) 10:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs 귓방망이",
-        "result": "패"
+        "result": "패",
+        "score": "5:12"
     },
     {
         "id": 11,
