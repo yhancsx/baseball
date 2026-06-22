@@ -84,21 +84,24 @@ const scheduleData = [
         "date": "06월07일(일) 06:30",
         "category": "일요리그",
         "match": "Home_Instagram vs 굳팰라스",
-        "result": null
+        "result": "패",
+        "score": "6:7"
     },
     {
         "id": 12,
         "date": "06월21일(일) 14:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs 아이파커스",
-        "result": null
+        "result": "패",
+        "score": "2:6"
     },
     {
         "id": 13,
         "date": "06월21일(일) 16:30",
         "category": "일요리그",
         "match": "Better than You vs Home_Instagram",
-        "result": null
+        "result": "무",
+        "score": "2:2"
     },
     {
         "id": 14,
