@@ -42,9 +42,8 @@ async function scrapeSchedule() {
         const date = await cells[0].innerText().then(t => t.replace(/\s+/g, " ").trim());
         const category = await cells[1].innerText().then(t => t.replace(/\s+/g, " ").trim());
 
-        // 구장 정보가 있으면 카테고리에 합쳐서 표현
-        const ballpark = await cells[2].innerText().then(t => t.replace(/\s+/g, " ").trim());
-        const displayCategory = ballpark ? `${category} (${ballpark})` : category;
+        // 구장 정보는 표시 제외
+        const displayCategory = category;
 
         // 매치 정보 추출 (Emblem + Name + Score)
         const matchData = await cells[3].evaluate((cell) => {
