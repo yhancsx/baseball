@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>더이상은 NAVER 타격 기록</title>
+    <meta name="description" content="더이상은 NAVER 팀의 연도별 타격 기록을 확인하세요.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="더이상은 NAVER 타격 기록">
+    <meta property="og:description" content="더이상은 NAVER 팀의 연도별 타격 기록을 확인하세요.">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="더이상은 NAVER 타격 기록">
+    <meta name="twitter:description" content="더이상은 NAVER 팀의 연도별 타격 기록을 확인하세요.">
+
+    <link rel="stylesheet" href="../../common.css">
+    <style>
+        /* ── 연도 탭 ── */
+        .year-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .year-tab {
+            padding: 10px 28px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            background: transparent;
+            color: #667eea;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .year-tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .year-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ── 필터 컨트롤 ── */
+        .filter-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .slider-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: #f7fafc;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .slider-wrapper label {
+            color: #4a5568;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .slider-wrapper input[type="range"] {
+            -webkit-appearance: none;
+            width: 150px;
+            height: 6px;
+            background: #cbd5e0;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .slider-wrapper input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(102,126,234,0.4);
+        }
+
+        .slider-wrapper input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #764ba2;
+        }
+
+        .team-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #667eea;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* ── 로딩 / 에러 ── */
+        .status-message {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        /* ── 테이블 ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+        
+        table.table-compact {
+            min-width: 100%;
+        }
+
+        thead {
+            background: #667eea;
+            color: white;
+        }
+
+        thead th {
+            padding: 14px 12px;
+            font-weight: 600;
+            font-size: 0.88em;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+            position: relative;
+        }
+
+        thead th:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        thead th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        thead th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .sort-icon {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 0.75em;
+            opacity: 0.5;
+        }
+
+        thead th.sort-asc .sort-icon,
+        thead th.sort-desc .sort-icon {
+            opacity: 1;
+        }
+
+        /* 정렬된 컬럼 강조 (헤더) */
+        thead th.col-sorted {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f0f4ff;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody td {
+            padding: 13px 12px;
+            color: #4a5568;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        /* 이름 컬럼 가운데 정렬 + sticky */
+        tbody td.td-name {
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 60px;
+        }
+
+        /* sticky 고정 컬럼 */
+        .col-sticky {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+        }
+
+        thead th.col-sticky {
+            background: #667eea;
+            z-index: 3;
+        }
+
+        tbody td.col-sticky {
+            background: white;
+        }
+
+        tbody tr:hover td.col-sticky {
+            background-color: #f0f4ff;
+        }
+
+        /* 타율/장타율/출루율/OPS 강조 */
+        tbody td.td-rate {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* 각 컬럼 1위(최대값) 강조 */
+        tbody td.td-max {
+            color: #e53e3e !important;
+            font-weight: 800;
+        }
+
+        /* ── 반응형 ── */
+        @media (max-width: 768px) {
+            .year-tab {
+                padding: 8px 18px;
+                font-size: 0.9em;
+            }
+
+            table {
+                font-size: 0.78em;
+                min-width: 800px;
+            }
+
+            table.table-compact {
+                min-width: 100%;
+            }
+
+            thead th,
+            tbody td {
+                padding: 9px 7px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <a href="https://github.com/yhancsx/home_instagram" target="_blank" class="github-link" title="GitHub 저장소 보기">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏏 타격 기록</h1>
+            <div class="team-name">더이상은 NAVER</div>
+            <div class="nav-links">
+                <a href="../2026/" class="nav-link-item" title="2026 경기 일정">📅 경기 일정</a>
+                <a href="../lineup/" class="nav-link-item" title="AI 라인업 추천">🤖 AI 라인업</a>
+            </div>
+        </div>
+
+        <!-- 연도 탭 -->
+        <div class="year-tabs">
+            <button class="year-tab" id="tab-all" onclick="loadYear('all')">전체</button>
+            <button class="year-tab" id="tab-2024" onclick="loadYear(2024)">2024</button>
+            <button class="year-tab" id="tab-2025" onclick="loadYear(2025)">2025</button>
+            <button class="year-tab active" id="tab-2026" onclick="loadYear(2026)">2026</button>
+        </div>
+
+        <!-- 필터 -->
+        <div class="filter-controls">
+            <div class="slider-wrapper">
+                <input type="range" id="pa-slider" min="0" max="100" value="0" oninput="updateSliderValue()">
+                <span class="slider-value"><span id="pa-slider-value">0</span> 타석 이상</span>
+            </div>
+        </div>
+
+        <!-- 테이블 -->
+        <div id="status-message" class="status-message">데이터를 불러오는 중...</div>
+        <div class="table-wrapper" id="table-wrapper" style="display:none;">
+            <table id="hit-table">
+                <thead>
+                    <tr id="table-header"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // ── 컬럼 정의 ──
+        // 앞쪽 고정 우선순위 컬럼, 이후 나머지는 JSON 원순서로 동적 추가
+        // computed: true 인 컬럼은 JSON 원본 키가 없고 JS에서 계산
+        const PRIMARY_COLUMNS = [
+            { key: '이름',    label: '이름' },
+            { key: '타율',    label: '타율' },
+            { key: '장타율',  label: '장타율' },
+            { key: '출루율',  label: '출루율' },
+            { key: 'OPS',     label: 'OPS' },
+            { key: '삼진율',  label: '삼진율', computed: true },
+            { key: 'wRC+',    label: 'wRC+' },
+            { key: '타석',    label: '타석' },
+            { key: '타수',    label: '타수' },
+            { key: '총안타',  label: '총안타' },
+            { key: '볼넷',    label: '볼넷' },
+            { key: 'BB/K',    label: 'BB/K' },
+        ];
+
+        // 순위 컬럼은 테이블에서 미노출
+        const HIDDEN_KEYS = new Set(['순위', '도실 (도루자)', '고의 4구', '도루 성공률']);
+
+        const PRIMARY_KEYS = new Set(PRIMARY_COLUMNS.map(c => c.key));
+
+        // ── 3개년 병합 및 정렬 기준 ──
+        const SUM_KEYS = ['게임수', '타석', '타수', '득점', '총안타', '1루타', '2루타', '3루타', '홈런', '루타', '타점', '도루', '도실 (도루자)', '희타', '희비', '볼넷', '고의 4구', '사구', '삼진', '병살', '멀티 히트'];
+
+        // 정렬 상태
+        let sortKey = '타율';
+        let sortAsc = false; // 기본: 타율 내림차순
+
+        // 기본 타석 설정값 (총 경기수 × 배수 = 최초 슬라이더 세팅 기준)
+        const MIN_PA_MULTIPLIER = 1;
+
+        // 현재 데이터 캐시
+        let currentData = [];
+        let currentColumns = [];
+        let currentYear = 2026;
+
+        // ── 연도 로드 ──
+        function loadYear(year) {
+            currentYear = year;
+
+            // 탭 활성화
+            document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + year).classList.add('active');
+
+            // 컬럼 수에 따른 테이블 너비 모드 전환
+            const hitTable = document.getElementById('hit-table');
+            if (year === 'all') {
+                hitTable.classList.add('table-compact');
+            } else {
+                hitTable.classList.remove('table-compact');
+            }
+
+            // UI 초기화
+            document.getElementById('table-wrapper').style.display = 'none';
+            document.getElementById('status-message').style.display = 'block';
+            document.getElementById('status-message').textContent = '데이터를 불러오는 중...';
+
+            if (year === 'all') {
+                Promise.all([
+                    fetch('./2024_hit.json').then(r => r.ok ? r.json() : []),
+                    fetch('./2025_hit.json').then(r => r.ok ? r.json() : []),
+                    fetch('./2026_hit.json').then(r => r.ok ? r.json() : [])
+                ])
+                .then(datasets => {
+                    currentData = mergeAllYears(datasets);
+                    computeAdvancedStats(currentData);
+                    buildColumns(currentData);
+                    updateSliderBoundary();
+                    renderTable();
+                    document.getElementById('status-message').style.display = 'none';
+                    document.getElementById('table-wrapper').style.display = 'block';
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('status-message').textContent = '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+                });
+            } else {
+                const url = `./${year}_hit.json`;
+
+                fetch(url)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        return res.json();
+                    })
+                    .then(data => {
+                        currentData = data;
+                        computeAdvancedStats(currentData);
+                        buildColumns(data);
+                        updateSliderBoundary();
+                        renderTable();
+                        document.getElementById('status-message').style.display = 'none';
+                        document.getElementById('table-wrapper').style.display = 'block';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('status-message').textContent =
+                            '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+                    });
+            }
+        }
+
+        // ── 고급 스탯 계산 (wRC, wRC+) ──
+        function computeAdvancedStats(data) {
+            let t_ab=0, t_h=0, t_bb=0, t_hbp=0, t_sf=0, t_ibb=0, t_r=0, t_pa=0;
+            let t_1b=0, t_2b=0, t_3b=0, t_hr=0;
+
+            // 1. 팀 전체 합계 계산
+            data.forEach(p => {
+                t_ab += parseFloat(p['타수']) || 0;
+                t_h += parseFloat(p['총안타']) || 0;
+                t_bb += parseFloat(p['볼넷']) || 0;
+                t_hbp += parseFloat(p['사구']) || 0;
+                t_sf += parseFloat(p['희비']) || 0;
+                t_ibb += parseFloat(p['고의 4구']) || 0;
+                t_r += parseFloat(p['득점']) || 0;
+                t_pa += parseFloat(p['타석']) || 0;
+                t_1b += parseFloat(p['1루타']) || 0;
+                t_2b += parseFloat(p['2루타']) || 0;
+                t_3b += parseFloat(p['3루타']) || 0;
+                t_hr += parseFloat(p['홈런']) || 0;
+            });
+
+            // 2. 팀 평균 wOBA 및 wOBA Scale 도출
+            const t_obp_den = t_ab + t_bb + t_hbp + t_sf;
+            const t_obp = t_obp_den > 0 ? (t_h + t_bb + t_hbp) / t_obp_den : 0;
+
+            const t_woba_den = t_ab + t_bb - t_ibb + t_sf + t_hbp;
+            const t_unscaled_woba = t_woba_den > 0 ? 
+                (0.69*(t_bb - t_ibb) + 0.722*t_hbp + 0.888*t_1b + 1.271*t_2b + 1.616*t_3b + 2.101*t_hr) / t_woba_den : 0;
+
+            const woba_scale = (t_unscaled_woba > 0 && t_obp > 0) ? t_obp / t_unscaled_woba : 1.2;
+            const team_woba = t_unscaled_woba * woba_scale;
+            const team_r_pa = t_pa > 0 ? t_r / t_pa : 0;
+
+            // 3. 개별 선수 wRC, wRC+ 계산
+            data.forEach(p => {
+                const ab = parseFloat(p['타수']) || 0;
+                const bb = parseFloat(p['볼넷']) || 0;
+                const hbp = parseFloat(p['사구']) || 0;
+                const sf = parseFloat(p['희비']) || 0;
+                const ibb = parseFloat(p['고의 4구']) || 0;
+                const p_1b = parseFloat(p['1루타']) || 0;
+                const p_2b = parseFloat(p['2루타']) || 0;
+                const p_3b = parseFloat(p['3루타']) || 0;
+                const hr = parseFloat(p['홈런']) || 0;
+                const pa = parseFloat(p['타석']) || 0;
+
+                const woba_den = ab + bb - ibb + sf + hbp;
+                const unscaled_woba = woba_den > 0 ? 
+                    (0.69*(bb - ibb) + 0.722*hbp + 0.888*p_1b + 1.271*p_2b + 1.616*p_3b + 2.101*hr) / woba_den : 0;
+                const woba = unscaled_woba * woba_scale;
+                
+                let wrc_plus = 0;
+
+                if (pa > 0) {
+                    const wraa = ((woba - team_woba) / woba_scale) * pa;
+                    
+                    if (team_r_pa > 0) {
+                        wrc_plus = ((wraa / pa) + team_r_pa) / team_r_pa * 100;
+                    }
+                }
+
+                p['wRC+'] = Math.round(wrc_plus).toString();
+            });
+        }
+
+        // ── 슬라이더 조작 ──
+        function updateSliderBoundary() {
+            if (!currentData || currentData.length === 0) return;
+            
+            let minPA = Infinity;
+            let maxPA = -Infinity;
+            let maxGames = 0;
+            
+            currentData.forEach(p => {
+                const pa = parseFloat(p['타석']) || 0;
+                const games = parseInt(p['게임수']) || 0;
+                
+                if (pa < minPA) minPA = pa;
+                if (pa > maxPA) maxPA = pa;
+                if (games > maxGames) maxGames = games;
+            });
+            
+            if (minPA === Infinity) minPA = 0;
+            if (maxPA === -Infinity) maxPA = 0;
+            
+            const defaultRequiredPA = maxGames * MIN_PA_MULTIPLIER;
+            
+            const slider = document.getElementById('pa-slider');
+            slider.min = minPA;
+            slider.max = maxPA;
+            slider.value = defaultRequiredPA;
+            
+            document.getElementById('pa-slider-value').textContent = slider.value;
+        }
+
+        function updateSliderValue() {
+            const slider = document.getElementById('pa-slider');
+            document.getElementById('pa-slider-value').textContent = slider.value;
+            renderTable();
+        }
+
+        // ── 컬럼 목록 구성 (primary + 나머지) ──
+        function buildColumns(data) {
+            if (!data || data.length === 0) {
+                currentColumns = PRIMARY_COLUMNS;
+                return;
+            }
+
+            const allKeys = Object.keys(data[0]);
+            const remainingColumns = allKeys
+                .filter(k => !PRIMARY_KEYS.has(k) && !HIDDEN_KEYS.has(k))
+                .sort((a, b) => {
+                    const idxA = SUM_KEYS.indexOf(a);
+                    const idxB = SUM_KEYS.indexOf(b);
+                    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                    if (idxA !== -1) return -1;
+                    if (idxB !== -1) return 1;
+                    return a.localeCompare(b);
+                })
+                .map(k => ({ key: k, label: k }));
+
+            currentColumns = [...PRIMARY_COLUMNS, ...remainingColumns];
+        }
+
+        // ── 테이블 렌더링 ──
+        function renderTable() {
+            renderHeader();
+            renderBody();
+        }
+
+        function renderHeader() {
+            const headerRow = document.getElementById('table-header');
+            headerRow.innerHTML = '';
+
+            currentColumns.forEach((col) => {
+                const th = document.createElement('th');
+
+                if (col.key === '이름') th.classList.add('col-sticky');
+
+                // 정렬 상태 클래스
+                if (col.key === sortKey) {
+                    th.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+                    th.classList.add('col-sorted');
+                }
+
+                const iconChar = col.key === sortKey ? (sortAsc ? '▲' : '▼') : '⇅';
+                th.innerHTML = `${col.label}<span class="sort-icon">${iconChar}</span>`;
+                th.dataset.key = col.key;
+                th.addEventListener('click', () => onHeaderClick(col.key));
+                headerRow.appendChild(th);
+            });
+        }
+
+        function renderBody() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const slider = document.getElementById('pa-slider');
+            const filterValue = parseFloat(slider.value) || 0;
+            let displayData = currentData.filter(p => {
+                const pa = parseFloat(p['타석']) || 0;
+                return pa >= filterValue;
+            });
+
+            const sorted = displayData.sort((a, b) => {
+                // computed 컬럼(삼진율)은 직접 계산
+                const getVal = (player, key) => {
+                    if (key === '삼진율') {
+                        const k = parseFloat(player['삼진']);
+                        const pa = parseFloat(player['타석']);
+                        return (!isNaN(k) && !isNaN(pa) && pa > 0) ? k / pa : -Infinity;
+                    }
+                    return player[key];
+                };
+                const va = getVal(a, sortKey);
+                const vb = getVal(b, sortKey);
+                const na = parseFloat(va);
+                const nb = parseFloat(vb);
+                let cmp;
+                if (!isNaN(na) && !isNaN(nb)) {
+                    cmp = na - nb;
+                } else {
+                    cmp = String(va).localeCompare(String(vb), 'ko');
+                }
+                return sortAsc ? cmp : -cmp;
+            });
+
+            // 타율 강조 컬럼 키 셋
+            const rateKeys = new Set(['타율', '장타율', '출루율', 'OPS', '삼진율', 'wRC+']);
+
+            // 각 컬럼별 최대값 찾기 (이름 컬럼 제외)
+            const maxValues = {};
+            currentColumns.forEach(col => {
+                if (col.key === '이름') return;
+
+                let max = -Infinity;
+                sorted.forEach(player => {
+                    let numVal;
+                    if (col.computed && col.key === '삼진율') {
+                        const k = parseFloat(player['삼진']);
+                        const pa = parseFloat(player['타석']);
+                        numVal = (!isNaN(k) && !isNaN(pa) && pa > 0) ? parseFloat((k / pa).toFixed(3)) : -Infinity;
+                    } else {
+                        numVal = parseFloat(player[col.key]);
+                    }
+                    if (!isNaN(numVal) && numVal > max) {
+                        max = numVal;
+                    }
+                });
+                maxValues[col.key] = max;
+            });
+
+            sorted.forEach((player) => {
+                const tr = document.createElement('tr');
+
+                currentColumns.forEach((col) => {
+                    const td = document.createElement('td');
+
+                    // computed 컬럼 처리
+                    let val;
+                    let numVal;
+                    if (col.computed && col.key === '삼진율') {
+                        const k = parseFloat(player['삼진']);
+                        const pa = parseFloat(player['타석']);
+                        if (!isNaN(k) && !isNaN(pa) && pa > 0) {
+                            val = (k / pa).toFixed(3);
+                            numVal = parseFloat(val);
+                        } else {
+                            val = '-';
+                        }
+                    } else {
+                        val = player[col.key] !== undefined ? player[col.key] : '-';
+                        numVal = parseFloat(val);
+                    }
+
+                    if (col.key === '이름') {
+                        td.classList.add('td-name');
+                        td.classList.add('col-sticky');
+                    } else if (rateKeys.has(col.key)) {
+                        td.classList.add('td-rate');
+                    }
+
+                    // 최대값(1위) 강조 (단, 0보다 큰 경우만)
+                    if (col.key !== '이름' && !isNaN(numVal) && numVal === maxValues[col.key] && maxValues[col.key] > 0) {
+                        td.classList.add('td-max');
+                    }
+
+                    // 이름 컬럼: 괄호+번호 제거 (예: '박현규(49)' → '박현규')
+                    if (col.key === '이름') val = String(val).replace(/\(\d+\)$/, '').trim();
+                    td.textContent = val;
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ── 헤더 클릭 정렬 ──
+        function onHeaderClick(key) {
+            if (sortKey === key) {
+                sortAsc = !sortAsc;
+            } else {
+                sortKey = key;
+                // 이름 컬럼은 기본 오름차순, 나머지는 내림차순
+                sortAsc = (key === '이름');
+            }
+            renderTable();
+        }
+
+        // ── 3개년 병합 로직 ──
+        function mergeAllYears(datasets) {
+            const map = new Map();
+            for (const data of datasets) {
+                for (const player of data) {
+                    const name = player['이름'].replace(/\(\d+\)$/, '').trim();
+                    if (!map.has(name)) map.set(name, initBlank(name));
+                    accumulate(map.get(name), player);
+                }
+            }
+            return [...map.values()].map(recalcRates);
+        }
+
+        function initBlank(name) {
+            const obj = { '이름': name };
+            SUM_KEYS.forEach(k => obj[k] = 0);
+            return obj;
+        }
+
+        function accumulate(acc, player) {
+            SUM_KEYS.forEach(k => {
+                acc[k] = (acc[k] || 0) + (parseFloat(player[k]) || 0);
+            });
+        }
+
+        function recalcRates(p) {
+            const ab = parseFloat(p['타수']) || 0;
+            const h = parseFloat(p['총안타']) || 0;
+            const tb = parseFloat(p['루타']) || 0;
+            const bb = parseFloat(p['볼넷']) || 0;
+            const hbp = parseFloat(p['사구']) || 0;
+            const sf = parseFloat(p['희비']) || 0;
+            const k = parseFloat(p['삼진']) || 0;
+            const h2 = parseFloat(p['2루타']) || 0;
+            const h3 = parseFloat(p['3루타']) || 0;
+            const hr = parseFloat(p['홈런']) || 0;
+
+            const avg = ab > 0 ? (h / ab) : 0;
+            const slg = ab > 0 ? (tb / ab) : 0;
+            const obp = (ab + bb + hbp + sf) > 0
+                ? (h + bb + hbp) / (ab + bb + hbp + sf)
+                : 0;
+            const ops = slg + obp;
+
+            const bb_k = k > 0 ? (bb / k).toFixed(2) : (bb > 0 ? bb.toFixed(2) : "0.00");
+            const xbh_h = h > 0 ? ((h2 + h3 + hr) / h).toFixed(3) : "0.000";
+
+            return {
+                ...p,
+                '타율': avg.toFixed(3),
+                '장타율': slg.toFixed(3),
+                '출루율': obp.toFixed(3),
+                'OPS': ops.toFixed(3),
+                'BB/K': bb_k,
+                '장타/안타': xbh_h
+            };
+        }
+
+        // ── 초기 로드 (현재 연도 기본: 가장 최신) ──
+        document.addEventListener('DOMContentLoaded', () => {
+            loadYear(2026);
+        });
+    </script>
+</body>
+</html>

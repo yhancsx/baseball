@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>더이상은 NAVER 2026년 리그 일정</title>
+    <meta name="description" content="더이상은 NAVER 팀의 2026년 리그 전체 경기 일정을 확인하세요.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="더이상은 NAVER 2026년 리그 일정">
+    <meta property="og:description" content="더이상은 NAVER 팀의 2026년 리그 전체 경기 일정을 확인하세요.">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="더이상은 NAVER 2026년 리그 일정">
+    <meta name="twitter:description" content="더이상은 NAVER 팀의 2026년 리그 전체 경기 일정을 확인하세요.">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="../../common.css">
+    <style>
+        .game-summary {
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        thead th {
+            padding: 18px 15px;
+            font-weight: 600;
+            font-size: 1em;
+            text-transform: uppercase;
+        }
+
+        thead th:first-child {
+            border-radius: 10px 0 0 0;
+            width: 60px;
+        }
+
+        thead th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #edf2f7;
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f8faff;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody td {
+            padding: 16px 15px;
+            color: #4a5568;
+        }
+
+        tbody td:first-child {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        /* '경기' 컬럼 왼쪽 정렬 */
+        thead th:nth-child(5),
+        tbody td:nth-child(5) {
+            text-align: left;
+        }
+
+        .date {
+            font-weight: 600;
+            color: #2d3748;
+            white-space: nowrap;
+        }
+
+        .category {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .category-c1 {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .category-regular {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .match {
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .home-team {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .result {
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .result-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .result-badge.win {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .result-badge.lose {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .result-badge.draw {
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .score-display {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+
+        .lineup-btn {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: #edf2f7;
+            color: #4a5568;
+            border: 1px solid #cbd5e0;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .lineup-btn:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .game-summary {
+                font-size: 1em;
+            }
+
+            .download-btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            table {
+                font-size: 0.75em;
+                min-width: 550px;
+            }
+
+            thead th, tbody td {
+                padding: 10px 6px;
+            }
+
+            thead th:first-child, tbody td:first-child {
+                width: 30px;
+                padding: 10px 2px;
+            }
+
+            .category {
+                padding: 4px 10px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="https://github.com/yhancsx/home_instagram" target="_blank" class="github-link" title="GitHub 저장소 보기">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+    </a>
+    <div class="container">
+        <div class="header">
+            <h1>⚾ 2026 시즌 경기 일정</h1>
+            <div class="team-name">더이상은 NAVER</div>
+            <div id="game-summary" class="game-summary"></div>
+            <button class="download-btn" onclick="downloadImage()">📥 이미지로 다운로드</button>
+            <div class="quick-links">
+                <a href="../hit/" class="quick-link-item" title="타격 기록">📊 타격 기록</a>
+                <a href="https://www.gameone.kr/club/info/ranking/hitter?club_idx=36972" target="_blank" class="quick-link-item" title="게임원 클럽 페이지">⚾ 게임원 클럽</a>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>일시</th>
+                    <th>리그</th>
+                    <th>결과</th>
+                    <th>경기</th>
+                </tr>
+            </thead>
+            <tbody id="schedule-body">
+                <!-- 경기 일정이 여기에 동적으로 추가됩니다. -->
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <script src="schedule.js"></script>
+    <script>
+        function renderSchedule(data) {
+            const scheduleBody = document.getElementById('schedule-body');
+            const gameSummary = document.getElementById('game-summary');
+            
+            let wins = 0;
+            let losses = 0;
+            let draws = 0;
+
+            data.forEach(game => {
+                if (game.result === '승') {
+                    wins++;
+                } else if (game.result === '패') {
+                    losses++;
+                } else if (game.result === '무') {
+                    draws++;
+                }
+
+                const row = document.createElement('tr');
+                
+                const categoryClass = game.category === '일요leagueC1' || game.category === '일요리그C1' ? 'category-c1' : 'category-regular';
+                
+                let resultHTML = '';
+                if (game.result === '승') {
+                    resultHTML = `
+                        <div class="result-cell">
+                            <span class="result-badge win">승</span>
+                            <span class="score-display">${game.score || ''}</span>
+                        </div>
+                    `;
+                } else if (game.result === '패') {
+                    resultHTML = `
+                        <div class="result-cell">
+                            <span class="result-badge lose">패</span>
+                            <span class="score-display">${game.score || ''}</span>
+                        </div>
+                    `;
+                } else if (game.result === '무') {
+                    resultHTML = `
+                        <div class="result-cell">
+                            <span class="result-badge draw">무</span>
+                            <span class="score-display">${game.score || ''}</span>
+                        </div>
+                    `;
+                } else {
+                    resultHTML = '<a href="../lineup/" class="lineup-btn">🤖 라인업</a>';
+                }
+
+                row.innerHTML = `
+                    <td>${game.id}</td>
+                    <td class="date">${game.date}</td>
+                    <td><span class="category ${categoryClass}">${game.category}</span></td>
+                    <td class="result">${resultHTML}</td>
+                    <td class="match">${game.match.replace(/더이상은 NAVER/g, '<span class="home-team">더이상은 NAVER</span>')}</td>
+                `;
+                scheduleBody.appendChild(row);
+            });
+
+            gameSummary.textContent = `시즌 전적: ${wins}승 ${draws}무 ${losses}패`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof scheduleData !== 'undefined') {
+                renderSchedule(scheduleData);
+            } else {
+                console.error('scheduleData를 찾을 수 없습니다.');
+            }
+        });
+
+        function downloadImage() {
+            const button = document.querySelector('.download-btn');
+            const tableWrapper = document.querySelector('.table-wrapper');
+            const container = document.querySelector('.container');
+            
+            button.textContent = '⏳ 생성 중...';
+            button.disabled = true;
+
+            // 다운로드를 위해 스크롤 제거 및 전체 표시
+            const originalOverflow = tableWrapper.style.overflow;
+            const originalContainerOverflow = container.style.overflow;
+            
+            tableWrapper.style.overflow = 'visible';
+            container.style.overflow = 'visible';
+
+            // # 및 결과 컬럼 임시 제거
+            const hashColumnHeader = document.querySelector('thead th:nth-child(1)'); // #
+            const resultColumnHeader = document.querySelector('thead th:nth-child(4)'); // 결과
+
+            const hashColumnCells = document.querySelectorAll('tbody td:nth-child(1)');
+            const resultColumnCells = document.querySelectorAll('tbody td:nth-child(4)');
+            
+            const quickLinks = document.querySelector('.quick-links');
+            const githubLink = document.querySelector('.github-link');
+
+            const elementsToHide = [hashColumnHeader, resultColumnHeader, button, quickLinks, githubLink, ...hashColumnCells, ...resultColumnCells];
+            elementsToHide.forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+            
+            // 약간의 지연을 주어 렌더링 완료 대기
+            setTimeout(() => {
+                html2canvas(container, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    windowWidth: container.scrollWidth,
+                    windowHeight: container.scrollHeight
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = '더이상은_NAVER_경기일정_2026.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).catch(error => {
+                    console.error('이미지 생성 실패:', error);
+                    alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+                }).finally(() => {
+                    // 원래 스타일로 복구
+                    tableWrapper.style.overflow = originalOverflow;
+                    container.style.overflow = originalContainerOverflow;
+
+                    elementsToHide.forEach(el => {
+                        if (el) el.style.display = '';
+                    });
+                    
+                    button.textContent = '📥 이미지로 다운로드';
+                    button.disabled = false;
+                });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
