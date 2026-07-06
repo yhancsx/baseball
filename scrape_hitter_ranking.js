@@ -32,49 +32,47 @@ async function scrape() {
   await page.goto(URL, { waitUntil: "networkidle", timeout: 30_000 });
   await page.waitForTimeout(2000);
 
-  // 데이터가 있는 첫 번째 테이블 선택
   const tables = await page.$$("table");
-  let targetTable = null;
-
-  for (const table of tables) {
-    const rowCount = await table.$$eval("tbody tr", (rows) => rows.length);
-    if (rowCount > 0) {
-      targetTable = table;
-      break;
-    }
-  }
-
-  if (!targetTable) {
-    console.error("[!] 테이블을 찾을 수 없습니다.");
-    await browser.close();
-    return [];
-  }
-
-  // 헤더 추출 (thead > tr > th)
-  const headers = await targetTable.$$eval("thead tr th", (ths) =>
-    ths.map((th) => th.innerText.replace(/\s+/g, " ").trim())
-  );
-  console.log(`[*] 컬럼 수: ${headers.length}`);
-  console.log(`[*] 헤더: ${headers.join(", ")}`);
-
-  // 데이터 행 추출
-  // tbody의 각 tr 에는 th(순위·이름) + td(통계) 가 혼용됨 → th, td 모두 선택
-  const rows = await targetTable.$$("tbody tr");
-  console.log(`[*] 데이터 행 수: ${rows.length}`);
-
   const records = [];
+  console.log(`[*] 발견된 테이블 수: ${tables.length}`);
 
-  for (const row of rows) {
-    const values = await row.$$eval("th, td", (cells) =>
-      cells.map((c) => c.innerText.replace(/\s+/g, " ").trim())
+  for (let tIdx = 0; tIdx < tables.length; tIdx++) {
+    const table = tables[tIdx];
+    const rowCount = await table.$$eval("tbody tr", (rows) => rows.length);
+    if (rowCount === 0) continue;
+
+    console.log(`[*] 테이블 [${tIdx + 1}] 파싱 시작 (데이터 행 수: ${rowCount})`);
+
+    // 헤더 추출 (thead > tr > th) 및 컬럼 통일 ("경기" -> "게임수")
+    const headers = await table.$$eval("thead tr th", (ths) =>
+      ths.map((th) => {
+        const text = th.innerText.replace(/\s+/g, " ").trim();
+        return text === "경기" ? "게임수" : text;
+      })
     );
 
-    // 헤더 수에 맞게 조정
-    while (values.length < headers.length) values.push("");
-    const sliced = values.slice(0, headers.length);
+    if (headers.length === 0) {
+      console.log(`[!] 테이블 [${tIdx + 1}] 헤더를 찾을 수 없어 건너뜁니다.`);
+      continue;
+    }
 
-    const record = Object.fromEntries(headers.map((h, i) => [h, sliced[i]]));
-    records.push(record);
+    console.log(`[*] 테이블 [${tIdx + 1}] 컬럼 수: ${headers.length}`);
+    console.log(`[*] 테이블 [${tIdx + 1}] 헤더: ${headers.join(", ")}`);
+
+    // 데이터 행 추출
+    const rows = await table.$$("tbody tr");
+    for (const row of rows) {
+      const values = await row.$$eval("th, td", (cells) =>
+        cells.map((c) => c.innerText.replace(/\s+/g, " ").trim())
+      );
+
+      // 헤더 수에 맞게 조정
+      while (values.length < headers.length) values.push("");
+      const sliced = values.slice(0, headers.length);
+
+      const record = Object.fromEntries(headers.map((h, i) => [h, sliced[i]]));
+      records.push(record);
+    }
   }
 
   await browser.close();
