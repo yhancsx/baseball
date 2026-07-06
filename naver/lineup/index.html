@@ -448,7 +448,7 @@
                 systemPrompt: document.getElementById('system-prompt').value,
                 timestamp: new Date().toLocaleString('ko-KR')
             };
-            localStorage.setItem('home_instagram_last_lineup', JSON.stringify(data));
+            localStorage.setItem('naver_last_lineup', JSON.stringify(data));
             showSavedBanner(data.timestamp);
         }
 
@@ -463,7 +463,7 @@
 
         function clearSavedLineup() {
             if (confirm('저장된 라인업 데이터를 삭제하시겠습니까?')) {
-                localStorage.removeItem('home_instagram_last_lineup');
+                localStorage.removeItem('naver_last_lineup');
                 
                 const banner = document.getElementById('saved-info-banner');
                 if (banner) banner.style.display = 'none';
@@ -483,7 +483,7 @@
         }
 
         function loadSavedLineup() {
-            const rawData = localStorage.getItem('home_instagram_last_lineup');
+            const rawData = localStorage.getItem('naver_last_lineup');
             if (!rawData) return false;
             
             try {
