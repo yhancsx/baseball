@@ -12,10 +12,11 @@ import { writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 
 // ── 상수 ──────────────────────────────────────────────────────────
-// CLI 인수로 시즌 지정 가능: node scrape_hitter_ranking.js 2024
+// CLI 인수로 시즌 및 클럽 ID 지정 가능: node scrape_hitter_ranking.js 2026 36836
 const SEASON = process.argv[2] ?? 2026;
-const URL = `https://www.gameone.kr/club/info/ranking/hitter?club_idx=36836&kind=&season=${SEASON}`;
-const OUT_DIR = "hit";
+const CLUB_IDX = process.argv[3] ?? "36836";
+const URL = `https://www.gameone.kr/club/info/ranking/hitter?club_idx=${CLUB_IDX}&kind=&season=${SEASON}`;
+const OUT_DIR = CLUB_IDX === "36972" ? "naver/hit" : "home_instagram/hit";
 const CSV_PATH = join(OUT_DIR, `${SEASON}_hit.csv`);
 const JSON_PATH = join(OUT_DIR, `${SEASON}_hit.json`);
 
