@@ -34,6 +34,7 @@ async function scrape() {
 
   const tables = await page.$$("table");
   const records = [];
+  const seenTableFingerprints = new Set();
   console.log(`[*] 발견된 테이블 수: ${tables.length}`);
 
   for (let tIdx = 0; tIdx < tables.length; tIdx++) {
@@ -56,11 +57,9 @@ async function scrape() {
       continue;
     }
 
-    console.log(`[*] 테이블 [${tIdx + 1}] 컬럼 수: ${headers.length}`);
-    console.log(`[*] 테이블 [${tIdx + 1}] 헤더: ${headers.join(", ")}`);
-
-    // 데이터 행 추출
+    // 임시로 테이블 행 데이터 파싱
     const rows = await table.$$("tbody tr");
+    const tableRecords = [];
     for (const row of rows) {
       const values = await row.$$eval("th, td", (cells) =>
         cells.map((c) => c.innerText.replace(/\s+/g, " ").trim())
@@ -71,8 +70,26 @@ async function scrape() {
       const sliced = values.slice(0, headers.length);
 
       const record = Object.fromEntries(headers.map((h, i) => [h, sliced[i]]));
-      records.push(record);
+      tableRecords.push(record);
     }
+
+    // 첫 3명의 이름, 타율, 게임수를 결합하여 테이블 지문(Fingerprint) 생성
+    const fingerprint = tableRecords
+      .slice(0, 3)
+      .map(r => `${r['이름']}_${r['타율']}_${r['게임수']}`)
+      .join("|");
+
+    if (seenTableFingerprints.has(fingerprint)) {
+      console.log(`[*] 테이블 [${tIdx + 1}]은 이전 테이블의 복사본(중복)이므로 건너뜁니다.`);
+      continue;
+    }
+    seenTableFingerprints.add(fingerprint);
+
+    console.log(`[*] 테이블 [${tIdx + 1}] 컬럼 수: ${headers.length}`);
+    console.log(`[*] 테이블 [${tIdx + 1}] 헤더: ${headers.join(", ")}`);
+
+    // 중복이 아니면 최종 결과에 병합
+    records.push(...tableRecords);
   }
 
   await browser.close();
