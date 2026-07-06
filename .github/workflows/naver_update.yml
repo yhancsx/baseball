@@ -1,18 +1,17 @@
-name: Scrape Hitter Ranking
+name: Scrape Naver Data
 
 on:
-  # 수동 실행
   workflow_dispatch:
-  # 매주 일요일 저녁 8시 KST (KST = UTC+9 → UTC 11:00)
   schedule:
-    - cron: "0 11 * * 0"
+    # 매일 아침 8시 KST (KST = UTC+9 → UTC 23:00)
+    - cron: "0 23 * * *"
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write  # 결과 파일을 repo에 커밋하기 위해 필요
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -30,14 +29,15 @@ jobs:
       - name: Install Playwright Chromium (with system deps)
         run: npx playwright install chromium --with-deps
 
-      - name: Run scraper
-        run: npm run scrape:hitter
+      - name: Run scrapers
+        run: |
+          npm run scrape:naver:hitter
+          npm run scrape:naver:schedule
 
       - name: Commit and push results
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add hit/
-          # 변경사항이 없으면 커밋 건너뜀
-          git diff --cached --quiet || git commit -m "chore: update hitter ranking data"
+          git add naver/
+          git diff --cached --quiet || git commit -m "chore: update NAVER hitter ranking and schedule data"
           git push

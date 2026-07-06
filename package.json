@@ -7,7 +7,11 @@
     "scrape:hitter": "node scrape_hitter_ranking.js",
     "scrape:hitter:2024": "node scrape_hitter_ranking.js 2024",
     "scrape:hitter:2025": "node scrape_hitter_ranking.js 2025",
-    "scrape:hitter:2026": "node scrape_hitter_ranking.js 2026"
+    "scrape:hitter:2026": "node scrape_hitter_ranking.js 2026",
+    "scrape:home:hitter": "node scrape_hitter_ranking.js 2026 36836",
+    "scrape:home:schedule": "node scrape_schedule.js 36836 \"Home_Instagram\" home_instagram/2026/schedule.js",
+    "scrape:naver:hitter": "node scrape_hitter_ranking.js 2026 36972",
+    "scrape:naver:schedule": "node scrape_schedule.js 36972 \"더이상은 NAVER\" naver/2026/schedule.js"
   },
   "dependencies": {
     "playwright": "^1.44.0"

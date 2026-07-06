@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   workflow_run:
-    workflows: ["Scrape Hitter Ranking"]
+    workflows: ["Scrape Home Instagram Data", "Scrape Naver Data"]
     types:
       - completed
   workflow_dispatch:

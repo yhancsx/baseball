@@ -1,0 +1,43 @@
+name: Scrape Home Instagram Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 매주 일요일 저녁 8시 KST (KST = UTC+9 → UTC 11:00)
+    - cron: "0 11 * * 0"
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium (with system deps)
+        run: npx playwright install chromium --with-deps
+
+      - name: Run scrapers
+        run: |
+          npm run scrape:home:hitter
+          npm run scrape:home:schedule
+
+      - name: Commit and push results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add home_instagram/
+          git diff --cached --quiet || git commit -m "chore: update Home_Instagram hitter ranking and schedule data"
+          git push
