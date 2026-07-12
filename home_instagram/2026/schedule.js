@@ -113,22 +113,14 @@ const scheduleData = [
     },
     {
         "id": 15,
-        "date": "07월05일(일) 10:30",
-        "category": "일요리그C1",
-        "match": "Home_Instagram vs NINE PRINCES",
-        "result": null,
-        "score": null
-    },
-    {
-        "id": 16,
         "date": "07월12일(일) 16:30",
         "category": "일요리그",
         "match": "Home_Instagram vs 광림파크 야구단",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "4:8"
     },
     {
-        "id": 17,
+        "id": 16,
         "date": "07월26일(일) 14:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs Team Roots",
@@ -136,7 +128,7 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 18,
+        "id": 17,
         "date": "08월02일(일) 14:30",
         "category": "일요리그",
         "match": "루나스틱OB vs Home_Instagram",
@@ -144,7 +136,7 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 19,
+        "id": 18,
         "date": "08월09일(일) 06:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs 배트맨 리턴즈",
@@ -152,7 +144,7 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 20,
+        "id": 19,
         "date": "08월16일(일) 06:30",
         "category": "일요리그",
         "match": "Home_Instagram vs 캐넌즈",
@@ -160,7 +152,7 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 21,
+        "id": 20,
         "date": "09월06일(일) 12:30",
         "category": "일요리그C1",
         "match": "SJ브라더스 vs Home_Instagram",
@@ -168,10 +160,18 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 22,
+        "id": 21,
         "date": "10월04일(일) 08:30",
         "category": "일요리그C1",
         "match": "Mollangs vs Home_Instagram",
+        "result": null,
+        "score": null
+    },
+    {
+        "id": 22,
+        "date": "10월25일(일) 10:30",
+        "category": "일요리그C1",
+        "match": "Home_Instagram vs NINE PRINCES",
         "result": null,
         "score": null
     }
