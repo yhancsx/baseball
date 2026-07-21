@@ -76,8 +76,8 @@ const scheduleData = [
         "date": "07월21일(화) 20:30",
         "category": "유신 평일야간리그",
         "match": "더이상은 NAVER vs Mz뽀로로",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "0:10"
     },
     {
         "id": 11,
