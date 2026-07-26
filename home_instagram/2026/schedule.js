@@ -124,8 +124,8 @@ const scheduleData = [
         "date": "07월26일(일) 14:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs Team Roots",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "6:7"
     },
     {
         "id": 17,
