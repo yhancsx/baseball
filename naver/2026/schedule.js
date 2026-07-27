@@ -84,7 +84,7 @@ const scheduleData = [
         "date": "07월27일(월) 20:30",
         "category": "유신 평일야간리그",
         "match": "R.O.K 어벤져스 vs 더이상은 NAVER",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "7:12"
     }
 ];
