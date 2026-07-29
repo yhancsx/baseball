@@ -86,5 +86,45 @@ const scheduleData = [
         "match": "R.O.K 어벤져스 vs 더이상은 NAVER",
         "result": "패",
         "score": "7:12"
+    },
+    {
+        "id": 12,
+        "date": "08월18일(화) 20:30",
+        "category": "유신 평일야간 후반기",
+        "match": "더이상은 NAVER vs 라온제나",
+        "result": null,
+        "score": null
+    },
+    {
+        "id": 13,
+        "date": "09월09일(수) 20:30",
+        "category": "유신 평일야간 후반기",
+        "match": "ABBA vs 더이상은 NAVER",
+        "result": null,
+        "score": null
+    },
+    {
+        "id": 14,
+        "date": "09월16일(수) 20:30",
+        "category": "유신 평일야간 후반기",
+        "match": "되것어? vs 더이상은 NAVER",
+        "result": null,
+        "score": null
+    },
+    {
+        "id": 15,
+        "date": "10월07일(수) 20:30",
+        "category": "유신 평일야간 후반기",
+        "match": "더이상은 NAVER vs MAJOR",
+        "result": null,
+        "score": null
+    },
+    {
+        "id": 16,
+        "date": "10월14일(수) 20:30",
+        "category": "유신 평일야간 후반기",
+        "match": "더이상은 NAVER vs 알파 브레이브스",
+        "result": null,
+        "score": null
     }
 ];
