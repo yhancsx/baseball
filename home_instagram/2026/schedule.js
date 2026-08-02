@@ -132,8 +132,8 @@ const scheduleData = [
         "date": "08월02일(일) 14:30",
         "category": "일요리그",
         "match": "루나스틱OB vs Home_Instagram",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "3:13"
     },
     {
         "id": 18,
