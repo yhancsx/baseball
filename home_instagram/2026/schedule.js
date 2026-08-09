@@ -140,8 +140,8 @@ const scheduleData = [
         "date": "08월09일(일) 06:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs 배트맨 리턴즈",
-        "result": null,
-        "score": null
+        "result": "승",
+        "score": "14:5"
     },
     {
         "id": 19,
