@@ -169,7 +169,7 @@ const scheduleData = [
     },
     {
         "id": 22,
-        "date": "10월25일(일) 10:30",
+        "date": "11월01일(일) 08:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs NINE PRINCES",
         "result": null,
