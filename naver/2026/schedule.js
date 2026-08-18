@@ -92,8 +92,8 @@ const scheduleData = [
         "date": "08월18일(화) 20:30",
         "category": "유신 평일야간 후반기",
         "match": "더이상은 NAVER vs 라온제나",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "4:12"
     },
     {
         "id": 13,
