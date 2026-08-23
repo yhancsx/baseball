@@ -145,14 +145,6 @@ const scheduleData = [
     },
     {
         "id": 19,
-        "date": "08월16일(일) 06:30",
-        "category": "일요리그",
-        "match": "Home_Instagram vs 캐넌즈",
-        "result": null,
-        "score": null
-    },
-    {
-        "id": 20,
         "date": "09월06일(일) 12:30",
         "category": "일요리그C1",
         "match": "SJ브라더스 vs Home_Instagram",
@@ -160,7 +152,7 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 21,
+        "id": 20,
         "date": "10월04일(일) 08:30",
         "category": "일요리그C1",
         "match": "Mollangs vs Home_Instagram",
@@ -168,10 +160,18 @@ const scheduleData = [
         "score": null
     },
     {
-        "id": 22,
+        "id": 21,
         "date": "11월01일(일) 08:30",
         "category": "일요리그C1",
         "match": "Home_Instagram vs NINE PRINCES",
+        "result": null,
+        "score": null
+    },
+    {
+        "id": 22,
+        "date": "11월15일(일) 07:00",
+        "category": "일요리그",
+        "match": "Home_Instagram vs 캐넌즈",
         "result": null,
         "score": null
     }
