@@ -148,8 +148,8 @@ const scheduleData = [
         "date": "09월06일(일) 12:30",
         "category": "일요리그C1",
         "match": "SJ브라더스 vs Home_Instagram",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "6:19"
     },
     {
         "id": 20,
