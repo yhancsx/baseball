@@ -100,8 +100,8 @@ const scheduleData = [
         "date": "09월09일(수) 20:30",
         "category": "유신 평일야간 후반기",
         "match": "ABBA vs 더이상은 NAVER",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "6:12"
     },
     {
         "id": 14,
