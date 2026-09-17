@@ -108,8 +108,8 @@ const scheduleData = [
         "date": "09월16일(수) 20:30",
         "category": "유신 평일야간 후반기",
         "match": "되것어? vs 더이상은 NAVER",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "3:23"
     },
     {
         "id": 15,
