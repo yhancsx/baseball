@@ -156,8 +156,8 @@ const scheduleData = [
         "date": "10월04일(일) 08:30",
         "category": "일요리그C1",
         "match": "Mollangs vs Home_Instagram",
-        "result": null,
-        "score": null
+        "result": "무",
+        "score": "8:8"
     },
     {
         "id": 21,
