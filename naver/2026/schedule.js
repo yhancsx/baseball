@@ -116,8 +116,8 @@ const scheduleData = [
         "date": "10월07일(수) 20:30",
         "category": "유신 평일야간 후반기",
         "match": "더이상은 NAVER vs MAJOR",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "1:9"
     },
     {
         "id": 16,
