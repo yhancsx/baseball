@@ -124,7 +124,7 @@ const scheduleData = [
         "date": "10월14일(수) 20:30",
         "category": "유신 평일야간 후반기",
         "match": "더이상은 NAVER vs 알파 브레이브스",
-        "result": null,
-        "score": null
+        "result": "패",
+        "score": "3:20"
     }
 ];
